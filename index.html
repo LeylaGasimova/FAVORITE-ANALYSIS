@@ -274,6 +274,11 @@
     </div>
     <div class="kpi-row" id="kpi-weekly"></div>
 
+    <div class="card" style="margin-top:14px;">
+      <div class="section-note" style="margin-bottom:10px;">Оборот и штуки в пересчёте на день (не средний чек — данных о количестве отдельных покупок в POS-выгрузке Favorit нет, только сумма и штуки)</div>
+      <div class="scroll-x"><table id="avg-check-table"></table></div>
+    </div>
+
     <div style="display:flex; gap:6px; margin: 4px 0 14px;">
       <button type="button" class="brand-chip active" id="wk-metric-azn">По деньгам (AZN)</button>
       <button type="button" class="brand-chip" id="wk-metric-qty">По штукам</button>
@@ -567,6 +572,7 @@
   "use strict";
 
   function fmt0(n) { return Math.round(n).toLocaleString("ru-RU"); }
+  function fmt1(n) { return n.toLocaleString("ru-RU", { minimumFractionDigits: 1, maximumFractionDigits: 1 }); }
   function esc(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
 
   var WEEKLY = {
@@ -815,6 +821,21 @@
       return '<div class="kpi"><div class="kpi-label">' + esc(t.label) + '</div><div class="kpi-value">' + t.value + '</div></div>';
     }).join("");
   }
+  var AVG_CHECK = [
+    {label:"08.08–16.08.2026", days:9, qty:104, total:2211},
+    {label:"17.08–23.08.2026", days:7, qty:103, total:2174},
+    {label:"24.08–31.08.2026", days:8, qty:136, total:3259}
+  ];
+  function renderAvgCheckTable() {
+    var head = "<thead><tr><th>Неделя</th><th>Дней</th><th>Оборот, AZN</th><th>Кол-во, шт</th><th>Оборот, AZN/день</th><th>Шт/день</th></tr></thead>";
+    var totDays = 0, totQty = 0, totAzn = 0;
+    var body = AVG_CHECK.map(function (w) {
+      totDays += w.days; totQty += w.qty; totAzn += w.total;
+      return "<tr><td>" + esc(w.label) + "</td><td class=\"num\">" + w.days + "</td><td class=\"num\">" + fmt0(w.total) + "</td><td class=\"num\">" + fmt0(w.qty) + "</td><td class=\"num\"><b>" + fmt1(w.total / w.days) + "</b></td><td class=\"num\">" + fmt1(w.qty / w.days) + "</td></tr>";
+    }).join("");
+    body += "<tr style=\"font-weight:700;border-top:2px solid var(--hairline);\"><td>ИТОГО / СРЕДНЕЕ</td><td class=\"num\">" + totDays + "</td><td class=\"num\">" + fmt0(totAzn) + "</td><td class=\"num\">" + fmt0(totQty) + "</td><td class=\"num\">" + fmt1(totAzn / totDays) + "</td><td class=\"num\">" + fmt1(totQty / totDays) + "</td></tr>";
+    document.getElementById("avg-check-table").innerHTML = head + "<tbody>" + body + "</tbody>";
+  }
   function wirePeriodPicker() {
     var picker = document.getElementById("period-picker");
     if (!picker) return;
@@ -964,6 +985,7 @@ function computeWeeklySettlement() {
   }
   renderWeeklyKpis("all");
   wirePeriodPicker();
+  renderAvgCheckTable();
   updateHeroSoldKpis();
   updateSettleCards();
   renderCatalogCoverage();
@@ -1582,14 +1604,14 @@ function computeWeeklySettlement() {
       { label: "Ни разу не продавались", value: fmt0(deadCount) + " (" + deadPct.toFixed(0) + "%)" },
       { label: "50% оборота даёт", value: fmt0(r50) + " SKU из " + fmt0(soldCount) },
       { label: "80% оборота даёт", value: fmt0(r80) + " SKU из " + fmt0(soldCount) },
-      { label: "Физически в наличии у Favorit (02.09)", value: "480 SKU" }
+      { label: "Физически в наличии у Favorit (02.09)", value: "495 SKU" }
     ];
     document.getElementById("kpi-deep").innerHTML = tiles.map(function (t) {
       return '<div class="kpi"><div class="kpi-label">' + esc(t.label) + '</div><div class="kpi-value">' + t.value + '</div></div>';
     }).join("");
     var noteEl = document.getElementById("pareto-note");
     if (noteEl) {
-      noteEl.textContent = "Показаны первые 40 из " + soldCount + " продававшихся SKU. 50% оборота дают первые " + r50 + " SKU, 80% оборота — первые " + r80 + " SKU. Ниже — все " + deadCount + " позиций каталога (из " + catalogTotal + "), которые ни разу не продавались с 08.08 по 31.08.2026, потенциал по RRP " + fmt0(deadValue) + " AZN. Отдельно по факт.остатку Favorit на 02.09: из 495 их позиций 480 сопоставлены с нашими SKU — из них 327 лежат нетронутыми (ни разу не продавались), у 153 часть уже продана, а остаток ещё стоит на полке; 15 позиций у Favorit не удалось сопоставить с нашим прайс-листом.";
+      noteEl.textContent = "Показаны первые 40 из " + soldCount + " продававшихся SKU. 50% оборота дают первые " + r50 + " SKU, 80% оборота — первые " + r80 + " SKU. Ниже — все " + deadCount + " позиций каталога (из " + catalogTotal + "), которые ни разу не продавались с 08.08 по 31.08.2026, потенциал по RRP " + fmt0(deadValue) + " AZN. Отдельно по факт.остатку Favorit на 02.09: все 495 их позиций сопоставлены с нашими SKU — из них 342 лежат нетронутыми (ни разу не продавались), у 153 часть уже продана, а остаток ещё стоит на полке.";
     }
   }
 
