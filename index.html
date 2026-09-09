@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
@@ -182,7 +182,6 @@
 </head>
 <body>
 
-
 <div class="topbar">
   <div class="topbar-inner">
     <div class="brand">
@@ -262,15 +261,19 @@
   <section id="weekly">
     <div class="section-head">
       <h2>Понедельная аналитика продаж</h2>
-      <div class="section-note">Чистые продажи по факту (без долгов и оплат) — 08.08–31.08.2026 (24 дня), по данным POS Favorit.</div>
+      <div class="section-note">Чистые продажи по факту (без долгов и оплат) — 08.08–06.09.2026 (30 дней), по данным POS Favorit. Кнопки ниже: недели и месяцы.</div>
     </div>
 
-    <div class="kpi-group-label" id="kpi-weekly-label">Весь период (08.08–31.08.2026)</div>
+    <div class="kpi-group-label" id="kpi-weekly-label">Весь период (08.08–06.09.2026)</div>
     <div style="display:flex; gap:6px; margin: 0 0 10px; flex-wrap:wrap;" id="period-picker">
       <button type="button" class="brand-chip active" data-period="all">Весь период</button>
       <button type="button" class="brand-chip" data-period="0">08.08–16.08</button>
       <button type="button" class="brand-chip" data-period="1">17.08–23.08</button>
       <button type="button" class="brand-chip" data-period="2">24.08–31.08</button>
+      <button type="button" class="brand-chip" data-period="3">01.09–06.09</button>
+      <span style="width:1px;background:var(--hairline);margin:2px 4px;"></span>
+      <button type="button" class="brand-chip" data-period="aug">Август</button>
+      <button type="button" class="brand-chip" data-period="sep">Сентябрь</button>
     </div>
     <div class="kpi-row" id="kpi-weekly"></div>
 
@@ -355,7 +358,7 @@
   <section id="trend">
     <div class="section-head">
       <h2>Динамика продаж по месяцам</h2>
-      <div class="section-note">Август (08.08–31.08.2026) уже закрыт — показан на графике. Остальные месяцы появятся по мере поступления данных.</div>
+      <div class="section-note">Август (08.08–31.08.2026) закрыт; сентябрь показан по неделе 01.09–06.09.2026 (неполный месяц). Остальные месяцы добавятся по мере поступления данных.</div>
     </div>
     <div class="card">
       <div class="chart-wrap" style="position:relative;">
@@ -381,6 +384,23 @@
     </div>
     <div class="card">
       <div class="settle-grid" id="settle-cards"></div>
+    </div>
+
+    <div class="card" style="margin-top:14px;">
+      <div class="section-note" style="margin-bottom:10px;">Валовая (гросс) маржа за август от безНДСной RRP: до и после выплаты 20% комиссии Favorit</div>
+      <div class="scroll-x">
+        <table>
+          <thead><tr><th>Показатель</th><th>AZN</th><th>% от оборота без НДС</th></tr></thead>
+          <tbody>
+            <tr><td>Оборот без НДС (продано)</td><td class="num">6 478</td><td class="num">100,0%</td></tr>
+            <tr><td>Себестоимость проданного</td><td class="num">2 727</td><td class="num">42,1%</td></tr>
+            <tr style="font-weight:700;background:var(--good-wash);"><td>Гросс маржа ДО выплаты 20%</td><td class="num" style="font-size:16px;">3 751</td><td class="num" style="font-size:16px;">57,9%</td></tr>
+            <tr><td>Комиссия Favorit 20%</td><td class="num">1 296</td><td class="num">20,0%</td></tr>
+            <tr style="font-weight:700;background:var(--warning-wash);"><td>Гросс маржа ПОСЛЕ выплаты 20%</td><td class="num" style="font-size:16px;">2 455</td><td class="num" style="font-size:16px;">37,9%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="font-size:12px;font-weight:700;color:var(--critical);margin-top:10px;padding-top:10px;border-top:1px solid var(--hairline);">Важно: в гросс марже выше НЕ учтены даже зарплаты сотрудников точки (продавщиц и т.д.) — только себестоимость товара и комиссия Favorit.</div>
     </div>
   </section>
 
@@ -496,7 +516,7 @@
     var W = 900, H = 260, ML = 50, MR = 16, MT = 16, MB = 30;
     var plotW = W - ML - MR, plotH = H - MT - MB;
     function x(i) { return ML + i * (plotW / 11); }
-    var MONTH_DATA = { 7: { qty: 343, total: 7644 } }; // Aug (index 7) — закрыт, 08.08-31.08.2026
+    var MONTH_DATA = { 7: { qty: 343, total: 7644 }, 8: { qty: 102, total: 2145 } }; // Aug(7) закрыт 08.08-31.08 ; Sep(8) частично 01.09-06.09.2026
     var maxVal = 10000;
     Object.keys(MONTH_DATA).forEach(function (k) { if (MONTH_DATA[k].total > maxVal * 0.85) maxVal = MONTH_DATA[k].total / 0.7; });
     function y(v) { return MT + plotH - (v / maxVal * plotH); }
@@ -577,50 +597,55 @@
 
   var WEEKLY = {
     brand: [
-      {name:"BRABANTIA", qty:99, total:2501},
-      {name:"NACHTMANN", qty:8, total:748},
-      {name:"Koopman", qty:42, total:692},
-      {name:"BORMIOLI", qty:31, total:639},
-      {name:"TOGNANA", qty:39, total:581},
-      {name:"BOLSIUS", qty:61, total:532},
-      {name:"Lekue", qty:13, total:444},
-      {name:"COINCASA", qty:17, total:423},
-      {name:"TVS", qty:6, total:356},
+      {name:"BRABANTIA", qty:120, total:2958},
+      {name:"TOGNANA", qty:52, total:931},
+      {name:"NACHTMANN", qty:10, total:921},
+      {name:"Koopman", qty:56, total:906},
+      {name:"BORMIOLI", qty:45, total:876},
+      {name:"BOLSIUS", qty:75, total:683},
+      {name:"Lekue", qty:17, total:539},
+      {name:"COINCASA", qty:21, total:487},
+      {name:"TVS", qty:7, total:404},
+      {name:"PAPER PRODUCTS", qty:24, total:342},
       {name:"VILLEROY & BOCH", qty:2, total:322},
-      {name:"PAPER PRODUCTS", qty:20, total:285},
-      {name:"ISABELLE LAURIER", qty:4, total:63},
-      {name:"Paderno", qty:1, total:58}
+      {name:"ISABELLE LAURIER", qty:12, total:196},
+      {name:"BUGATTI", qty:1, total:88},
+      {name:"Paderno", qty:2, total:68},
+      {name:"SCOTTISH FINE SOAPS", qty:1, total:68}
     ],
     cat: [
-      {name:"(без категории)", qty:188, total:2869},
-      {name:"Preparation Utensils", qty:30, total:544},
-      {name:"Knives", qty:20, total:465},
-      {name:"Food Storage", qty:21, total:429},
-      {name:"Frying Pans", qty:6, total:356},
-      {name:"Ice Molds", qty:11, total:342},
+      {name:"(без категории)", qty:253, total:4080},
+      {name:"Preparation Utensils", qty:34, total:623},
+      {name:"Knives", qty:25, total:580},
+      {name:"Food Storage", qty:30, total:546},
+      {name:"Frying Pans", qty:7, total:404},
+      {name:"Ice Molds", qty:14, total:396},
       {name:"Dinner Sets", qty:2, total:322},
+      {name:"Drinks Sets", qty:3, total:307},
+      {name:"Dish Dryer", qty:8, total:269},
       {name:"Serving Sets", qty:2, total:250},
       {name:"Fresh Keeping", qty:1, total:206},
-      {name:"Drinks Sets", qty:2, total:197},
-      {name:"Dish Dryer", qty:6, total:190},
       {name:"Drying Racks", qty:1, total:180},
       {name:"Mills", qty:2, total:154},
+      {name:"Bowls", qty:4, total:151},
       {name:"Cups Sets", qty:2, total:142},
-      {name:"Mittens", qty:6, total:108},
+      {name:"Mittens", qty:7, total:127},
+      {name:"Cutting Boards", qty:4, total:111},
       {name:"Ironing Boards", qty:2, total:102},
-      {name:"Cutting Boards", qty:3, total:87},
+      {name:"Bowls & Beakers", qty:3, total:84},
       {name:"Laundry Care", qty:5, total:79},
-      {name:"Bowls", qty:2, total:78},
+      {name:"Laundry Bags", qty:4, total:74},
       {name:"Bin Liners", qty:7, total:69},
       {name:"Baking Preparations", qty:1, total:68},
+      {name:"Gels", qty:1, total:68},
+      {name:"Strainers / Sieves", qty:5, total:65},
       {name:"Tissues", qty:4, total:59},
-      {name:"Laundry Bags", qty:3, total:57},
-      {name:"Strainers / Sieves", qty:4, total:52},
+      {name:"Mugs", qty:4, total:52},
       {name:"Sharpeners", qty:1, total:49},
       {name:"Guest Towels", qty:2, total:42},
-      {name:"Mugs", qty:3, total:39},
       {name:"Aprons", qty:1, total:35},
       {name:"Brushes", qty:1, total:27},
+      {name:"Placemats", qty:1, total:21},
       {name:"Soap Dishes", qty:1, total:20},
       {name:"Scissors", qty:1, total:15},
       {name:"Cloths", qty:2, total:12}
@@ -628,174 +653,208 @@
     weeks: [
       {label:"08.08–16.08", qty:104, total:2211},
       {label:"17.08–23.08", qty:103, total:2174},
-      {label:"24.08–31.08", qty:136, total:3259}
+      {label:"24.08–31.08", qty:136, total:3259},
+      {label:"01.09–06.09", qty:102, total:2145}
     ],
     sku: [
       {sku:"8664-8435", name:"Set 7pcs. EF", brand:"VILLEROY & BOCH", cat:"Dinner Sets", qty:2, rrp:161, total:322},
+      {sku:"120947", name:"Utility Knife,", brand:"BRABANTIA", cat:"Knives", qty:13, rrp:23, total:299},
       {sku:"97633", name:"Serving Set 4pcs", brand:"NACHTMANN", cat:"Serving Sets", qty:2, rrp:125, total:250},
       {sku:"363900", name:"Mixing Bowl Set, 1.0L + 1.6L + 3.0L", brand:"BRABANTIA", cat:"Fresh Keeping", qty:1, rrp:206, total:206},
-      {sku:"120947", name:"Utility Knife,", brand:"BRABANTIA", cat:"Knives", qty:8, rrp:23, total:184},
+      {sku:"117442", name:"Silicone Dish Drying Mat", brand:"BRABANTIA", cat:"Dish Dryer", qty:3, rrp:63, total:189},
       {sku:"403408", name:"Hangon Drying Rack, 20 metres Matt Black", brand:"BRABANTIA", cat:"Drying Racks", qty:1, rrp:180, total:180},
+      {sku:"101925066756", name:"Frag. diffuser 80 ml TJ FBS", brand:"BOLSIUS", cat:"", qty:8, rrp:20, total:160},
       {sku:"611407", name:"Salt and Pepper Crusher Set", brand:"BRABANTIA", cat:"Mills", qty:2, rrp:77, total:154},
+      {sku:"BN279202910701", name:"FRYPAN 20 EASY ECO INDUCTION", brand:"TVS", cat:"Frying Pans", qty:3, rrp:48, total:144},
       {sku:"103767", name:"Hot Beverage Glass Set/2", brand:"NACHTMANN", cat:"Cups Sets", qty:2, rrp:71, total:142},
-      {sku:"101925066756", name:"Frag. diffuser 80 ml TJ FBS", brand:"BOLSIUS", cat:"", qty:7, rrp:20, total:140},
       {sku:"BN279282910701", name:"FRYPAN  28 EASY ECO INDUCTION", brand:"TVS", cat:"Frying Pans", qty:2, rrp:67, total:134},
-      {sku:"117442", name:"Silicone Dish Drying Mat", brand:"BRABANTIA", cat:"Dish Dryer", qty:2, rrp:63, total:126},
+      {sku:"IR61434M315", name:"MUG CC340 2 ASS. (IRIS MARISOL)", brand:"TOGNANA", cat:"", qty:10, rrp:12, total:120},
       {sku:"104248", name:"Champagne Glass Set/4", brand:"NACHTMANN", cat:"Drinks Sets", qty:1, rrp:114, total:114},
+      {sku:"250446", name:"Pizza/Pastry Cutter Profile", brand:"BRABANTIA", cat:"Preparation Utensils", qty:4, rrp:28, total:112},
+      {sku:"C80652330", name:"STRAINER SET 3PCS STAINL STEEL", brand:"Koopman", cat:"", qty:5, rrp:22, total:110},
+      {sku:"98076", name:"Redwine Magnum Set/4", brand:"NACHTMANN", cat:"Drinks Sets", qty:1, rrp:110, total:110},
+      {sku:"101925066769", name:"Frag. diffuser 80 ml TJ WWN", brand:"BOLSIUS", cat:"", qty:5, rrp:20, total:100},
       {sku:"882302", name:"INDUSTRIAL ICE CUBE TRAY", brand:"Lekue", cat:"Ice Molds", qty:2, rrp:48, total:96},
-      {sku:"IR61434M315", name:"MUG CC340 2 ASS. (IRIS MARISOL)", brand:"TOGNANA", cat:"", qty:8, rrp:12, total:96},
-      {sku:"BN279202910701", name:"FRYPAN 20 EASY ECO INDUCTION", brand:"TVS", cat:"Frying Pans", qty:2, rrp:48, total:96},
       {sku:"121883", name:"Baking Spatula plus Scraper,", brand:"BRABANTIA", cat:"Preparation Utensils", qty:5, rrp:19, total:95},
       {sku:"106125", name:"Tumbler Set/4 433/10 ViNova MP/3", brand:"NACHTMANN", cat:"", qty:1, rrp:91, total:91},
-      {sku:"C80652330", name:"STRAINER SET 3PCS STAINL STEEL", brand:"Koopman", cat:"", qty:4, rrp:22, total:88},
+      {sku:"BBT-PB500IN", name:"TWIN 500 ML BARK SAND", brand:"BUGATTI", cat:"", qty:1, rrp:88, total:88},
       {sku:"117268", name:"Compact Dish Drying Rack Dark Grey", brand:"BRABANTIA", cat:"", qty:1, rrp:87, total:87},
       {sku:"882241", name:"ICONIC ICE CREAM (4 UD)", brand:"Lekue", cat:"Ice Molds", qty:2, rrp:43, total:86},
-      {sku:"250446", name:"Pizza/Pastry Cutter Profile", brand:"BRABANTIA", cat:"Preparation Utensils", qty:3, rrp:28, total:84},
+      {sku:"122163", name:"Mixing Bowl, 1.5L", brand:"BRABANTIA", cat:"Bowls & Beakers", qty:3, rrp:28, total:84},
       {sku:"100831", name:"Cocktail Glass Set/2", brand:"NACHTMANN", cat:"Drinks Sets", qty:1, rrp:83, total:83},
       {sku:"882401", name:"RECTANGULAR ICE CUBE TRAY", brand:"Lekue", cat:"Ice Molds", qty:3, rrp:27, total:81},
-      {sku:"101925066769", name:"Frag. diffuser 80 ml TJ WWN", brand:"BOLSIUS", cat:"", qty:4, rrp:20, total:80},
+      {sku:"101925066775", name:"Frag. diffuser 80 ml TJ VDL", brand:"BOLSIUS", cat:"", qty:4, rrp:20, total:80},
+      {sku:"117626", name:"DISH DRYING MAT, 47 X 40 CM - DARK GREY", brand:"BRABANTIA", cat:"Dish Dryer", qty:5, rrp:16, total:80},
       {sku:"210001670", name:"SERVING SET STONEWARE 5PCS", brand:"Koopman", cat:"", qty:1, rrp:76, total:76},
+      {sku:"882463", name:"SHELL ICE CUBE TRAY", brand:"Lekue", cat:"Ice Molds", qty:5, rrp:15, total:75},
       {sku:"RE1PI775957", name:"CIOTOLA LIMONE CM 18X12X5", brand:"TOGNANA", cat:"", qty:3, rrp:25, total:75},
+      {sku:"SJ8TAH6243A", name:"SERVING ROTONDO DIA.CM 33 STARBAMBOO STARBAMBOO H", brand:"TOGNANA", cat:"", qty:1, rrp:75, total:75},
       {sku:"120664", name:"Carving Knife,", brand:"BRABANTIA", cat:"Knives", qty:2, rrp:37, total:74},
-      {sku:"122842", name:"Kitchen Tongs plus Tweezers,", brand:"BRABANTIA", cat:"Preparation Utensils", qty:4, rrp:18, total:72},
       {sku:"122927", name:"Food Y-Peeler plus Zester,", brand:"BRABANTIA", cat:"Knives", qty:4, rrp:18, total:72},
+      {sku:"122842", name:"Kitchen Tongs plus Tweezers,", brand:"BRABANTIA", cat:"Preparation Utensils", qty:4, rrp:18, total:72},
       {sku:"242205", name:"Ironing Board Cover D, Complete Set", brand:"BRABANTIA", cat:"Ironing Boards", qty:1, rrp:70, total:70},
+      {sku:"404001530", name:"GRATER STAINLESS STEEL AND TPR", brand:"Koopman", cat:"", qty:10, rrp:7, total:70},
       {sku:"BS179283320001", name:"CREPE-PAN CM 28 EASY ECO INCUCTION", brand:"TVS", cat:"Frying Pans", qty:1, rrp:70, total:70},
       {sku:"192341GTG021990", name:"ELECTRA CAL SMALL", brand:"BORMIOLI", cat:"", qty:1, rrp:69, total:69},
-      {sku:"102253", name:"Bowl round 15cm Set/2", brand:"NACHTMANN", cat:"Bowls", qty:1, rrp:68, total:68},
       {sku:"882487", name:"ICE BOX", brand:"Lekue", cat:"Baking Preparations", qty:1, rrp:68, total:68},
-      {sku:"117626", name:"DISH DRYING MAT, 47 X 40 CM - DARK GREY", brand:"BRABANTIA", cat:"Dish Dryer", qty:4, rrp:16, total:64},
-      {sku:"404001530", name:"GRATER STAINLESS STEEL AND TPR", brand:"Koopman", cat:"", qty:9, rrp:7, total:63},
+      {sku:"121807", name:"Tasty+ Nice & Handy / Bottle Opener(Light Grey)", brand:"BRABANTIA", cat:"", qty:4, rrp:17, total:68},
+      {sku:"121906", name:"Pastry Brush, Silicone,", brand:"BRABANTIA", cat:"Preparation Utensils", qty:4, rrp:17, total:68},
+      {sku:"102253", name:"Bowl round 15cm Set/2", brand:"NACHTMANN", cat:"Bowls", qty:1, rrp:68, total:68},
+      {sku:"390634SVN021990", name:"FRIGOVERRE 2PCS SET(15X15-12)", brand:"BORMIOLI", cat:"Food Storage", qty:2, rrp:34, total:68},
+      {sku:"S30022", name:"Mens Grooming  Luxurious Gift Set & Soap", brand:"SCOTTISH FINE SOAPS", cat:"Gels", qty:1, rrp:68, total:68},
+      {sku:"170458320", name:"GRATER STAINLESS STEEL", brand:"Koopman", cat:"", qty:3, rrp:22, total:66},
+      {sku:"166969", name:"Sieve, Round, 75mm diameter", brand:"BRABANTIA", cat:"Strainers / Sieves", qty:5, rrp:13, total:65},
+      {sku:"388820MEV121990R", name:"CONTAINER SQUARE 19x19 W/BLUE LID", brand:"BORMIOLI", cat:"", qty:4, rrp:16, total:64},
+      {sku:"101924996956", name:"Frag. Glass + Lid 66/83 TJ FBS", brand:"BOLSIUS", cat:"", qty:4, rrp:16, total:64},
+      {sku:"77672", name:"Bowl  25 cm", brand:"NACHTMANN", cat:"Bowls", qty:1, rrp:63, total:63},
+      {sku:"335160MEX121990", name:"CONTAINER SYSTEM 21x13 W/BLUE LID", brand:"BORMIOLI", cat:"Food Storage", qty:4, rrp:15, total:60},
       {sku:"120961", name:"Paring Knife,", brand:"BRABANTIA", cat:"Knives", qty:3, rrp:20, total:60},
-      {sku:"101925066775", name:"Frag. diffuser 80 ml TJ VDL", brand:"BOLSIUS", cat:"", qty:3, rrp:20, total:60},
       {sku:"389116GSG021990", name:"CONTAINER EVOLUTION 12X12", brand:"BORMIOLI", cat:"Food Storage", qty:1, rrp:59, total:59},
       {sku:"41416-28", name:"Tray With Cover Cm 28x14 H 11,5 Wood SAN", brand:"Paderno", cat:"", qty:1, rrp:58, total:58},
       {sku:"388470MFB121990", name:"CONTAINER 23 W/BLUE LID", brand:"BORMIOLI", cat:"Food Storage", qty:3, rrp:19, total:57},
+      {sku:"122606", name:"Whisk, Large,", brand:"BRABANTIA", cat:"Preparation Utensils", qty:3, rrp:19, total:57},
       {sku:"Q56000190", name:"OVEN DISH STONEWARE 3ASS", brand:"Koopman", cat:"", qty:1, rrp:57, total:57},
       {sku:"795880580", name:"JAR WITH LID DIA 10XH14.8CM 3A", brand:"Koopman", cat:"", qty:2, rrp:28, total:56},
       {sku:"BN279242910801", name:"FRYPAN 24 EASY ECO INDUCTION", brand:"TVS", cat:"Frying Pans", qty:1, rrp:56, total:56},
       {sku:"116742", name:"PerfectFit Bags Y, 20 litre [20 bags per roll] White", brand:"BRABANTIA", cat:"Bin Liners", qty:5, rrp:11, total:55},
       {sku:"390610SK5021990", name:"FRIGOVERRE 3 PC SET COMPACT 2", brand:"BORMIOLI", cat:"Food Storage", qty:1, rrp:55, total:55},
-      {sku:"7266273", name:"Optical Effect Glass Teapot", brand:"COINCASA", cat:"", qty:1, rrp:54, total:54},
       {sku:"230844", name:"Swivel Food Peeler plus Zester / Fir Green", brand:"BRABANTIA", cat:"", qty:3, rrp:18, total:54},
-      {sku:"166969", name:"Sieve, Round, 75mm diameter", brand:"BRABANTIA", cat:"Strainers / Sieves", qty:4, rrp:13, total:52},
-      {sku:"149382", name:"Clothes brush Dark grey / Grey fabric", brand:"BRABANTIA", cat:"Laundry Care", qty:4, rrp:13, total:52},
+      {sku:"7266273", name:"Optical Effect Glass Teapot", brand:"COINCASA", cat:"", qty:1, rrp:54, total:54},
       {sku:"389110MEX121990", name:"CONTAINER EVOLUTION 18X14 -", brand:"BORMIOLI", cat:"Food Storage", qty:2, rrp:26, total:52},
+      {sku:"149382", name:"Clothes brush Dark grey / Grey fabric", brand:"BRABANTIA", cat:"Laundry Care", qty:4, rrp:13, total:52},
+      {sku:"DL114355711", name:"MUG CC360 DES ARTS HAPPY CO", brand:"TOGNANA", cat:"Mugs", qty:4, rrp:13, total:52},
       {sku:"6689454", name:"BUTTER DISH,P.BURRO PORC.B.CA", brand:"COINCASA", cat:"", qty:1, rrp:52, total:52},
-      {sku:"121906", name:"Pastry Brush, Silicone,", brand:"BRABANTIA", cat:"Preparation Utensils", qty:3, rrp:17, total:51},
+      {sku:"365742GTM021990", name:"INALT 3 SENSI CAL LARGE", brand:"BORMIOLI", cat:"", qty:1, rrp:52, total:52},
+      {sku:"210001690", name:"SERVING TRAY BAMBOO", brand:"Koopman", cat:"", qty:1, rrp:52, total:52},
       {sku:"495323", name:"Oven Mitt Kitchen  Mitten   Gc Slub Mel.Grigio 17X27", brand:"COINCASA", cat:"Mittens", qty:3, rrp:17, total:51},
       {sku:"Q56000170", name:"OVEN DISH STONEWARE 3ASS", brand:"Koopman", cat:"", qty:1, rrp:51, total:51},
       {sku:"493546", name:"Kitchen Roll Holder, Free Standing", brand:"BRABANTIA", cat:"Sharpeners", qty:1, rrp:49, total:49},
+      {sku:"103623220332", name:"Flame bowl 223/66 CIT", brand:"BOLSIUS", cat:"", qty:2, rrp:24, total:48},
+      {sku:"123122", name:"Chopping Board, Medium,", brand:"BRABANTIA", cat:"Cutting Boards", qty:2, rrp:24, total:48},
       {sku:"MU11440M318", name:"MUG CUP 400 CC - 3 ASS. (MADRID BUBBLE)", brand:"TOGNANA", cat:"", qty:4, rrp:12, total:48},
+      {sku:"7446523", name:"PLACEMAT , TOV.PVC DOPP.CORN.GREY", brand:"COINCASA", cat:"", qty:4, rrp:12, total:48},
       {sku:"390210SA1021990", name:"FRIGOVERRE 3 PC SET COMPACT", brand:"BORMIOLI", cat:"Food Storage", qty:1, rrp:47, total:47},
-      {sku:"6809447", name:"NBC SALAD BOWL 20CM W/DANDELIONS DES.(H.8)", brand:"COINCASA", cat:"", qty:1, rrp:46, total:46},
       {sku:"123146", name:"Chopping Board plus Serving Tray, Light Grey", brand:"BRABANTIA", cat:"Cutting Boards", qty:1, rrp:46, total:46},
+      {sku:"6809447", name:"NBC SALAD BOWL 20CM W/DANDELIONS DES.(H.8)", brand:"COINCASA", cat:"", qty:1, rrp:46, total:46},
       {sku:"365263", name:"Spatula  Small", brand:"BRABANTIA", cat:"Preparation Utensils", qty:3, rrp:15, total:45},
-      {sku:"882463", name:"SHELL ICE CUBE TRAY", brand:"Lekue", cat:"Ice Molds", qty:3, rrp:15, total:45},
+      {sku:"007257", name:"Lace embossed pearl 33x33", brand:"PAPER PRODUCTS", cat:"", qty:3, rrp:15, total:45},
       {sku:"10000014672", name:"FRIGOVERRE SMART D.14 CT12 C/CAP TR/AZZ", brand:"BORMIOLI", cat:"", qty:3, rrp:15, total:45},
       {sku:"1333106", name:"Napkin 33x33 cm", brand:"PAPER PRODUCTS", cat:"Tissues", qty:3, rrp:15, total:45},
-      {sku:"170458320", name:"GRATER STAINLESS STEEL", brand:"Koopman", cat:"", qty:2, rrp:22, total:44},
-      {sku:"133002563", name:"Tracey?s Citronella Napkin", brand:"PAPER PRODUCTS", cat:"", qty:3, rrp:14, total:42},
-      {sku:"133002430", name:"Olives & Herbs Napkin", brand:"PAPER PRODUCTS", cat:"", qty:3, rrp:14, total:42},
-      {sku:"RE1PI695957", name:"Lemon Ladle stand 26Ч11Ч3 h cm", brand:"TOGNANA", cat:"", qty:2, rrp:21, total:42},
+      {sku:"IL16425", name:"BATH MITT DINO", brand:"ISABELLE LAURIER", cat:"", qty:2, rrp:22, total:44},
       {sku:"7359670", name:"Z OSP SAND SAND GUEST TOWE TERRY FABRIC BATH TOWEL", brand:"COINCASA", cat:"Guest Towels", qty:2, rrp:21, total:42},
+      {sku:"133002430", name:"Olives & Herbs Napkin", brand:"PAPER PRODUCTS", cat:"", qty:3, rrp:14, total:42},
+      {sku:"133002563", name:"Tracey?s Citronella Napkin", brand:"PAPER PRODUCTS", cat:"", qty:3, rrp:14, total:42},
+      {sku:"RE1PI695957", name:"Lemon Ladle stand 26Ч11Ч3 h cm", brand:"TOGNANA", cat:"", qty:2, rrp:21, total:42},
+      {sku:"RE1PI685957", name:"PLATE CM 21X16", brand:"TOGNANA", cat:"", qty:2, rrp:21, total:42},
       {sku:"210001680", name:"SERVING SET STONEWARE 5PCS", brand:"Koopman", cat:"", qty:1, rrp:41, total:41},
+      {sku:"881305", name:"DEEP SAVARIN CAKE  22 cm", brand:"Lekue", cat:"", qty:1, rrp:41, total:41},
       {sku:"149221", name:"Wash Bags, Set of 3 White / Grey Zipper", brand:"BRABANTIA", cat:"Laundry Bags", qty:2, rrp:20, total:40},
-      {sku:"120640", name:"Chef's Knife,", brand:"BRABANTIA", cat:"Knives", qty:1, rrp:39, total:39},
-      {sku:"DL114355711", name:"MUG CC360 DES ARTS HAPPY CO", brand:"TOGNANA", cat:"Mugs", qty:3, rrp:13, total:39},
       {sku:"IR61436M271", name:"MUG CUP 360 CC", brand:"TOGNANA", cat:"", qty:3, rrp:13, total:39},
       {sku:"N3585B6M247", name:"SET 6 TUMBLERS CC 310", brand:"TOGNANA", cat:"", qty:1, rrp:39, total:39},
-      {sku:"122606", name:"Whisk, Large,", brand:"BRABANTIA", cat:"Preparation Utensils", qty:2, rrp:19, total:38},
+      {sku:"120640", name:"Chef's Knife,", brand:"BRABANTIA", cat:"Knives", qty:1, rrp:39, total:39},
       {sku:"7247168", name:"Set Of 2 Pot Holders In Pure Cotton With Tulip Print 2 Pres.Tulipani 18X18", brand:"COINCASA", cat:"Mittens", qty:2, rrp:19, total:38},
+      {sku:"W444436GGBO", name:"SPRING FORM CAKE PAN CM 26", brand:"TOGNANA", cat:"", qty:1, rrp:38, total:38},
       {sku:"122941", name:"Food Peeler plus Zester,", brand:"BRABANTIA", cat:"Knives", qty:2, rrp:18, total:36},
-      {sku:"6720305", name:"Apron In 100% Iridescent Cotton Slub Ocra 80X85", brand:"COINCASA", cat:"Aprons", qty:1, rrp:35, total:35},
+      {sku:"135729MP4321990", name:"JUG 2,0 W/WHITE LID", brand:"BORMIOLI", cat:"", qty:2, rrp:18, total:36},
       {sku:"365160MDE121990", name:"JAR 1,0 LID MOUNTED", brand:"BORMIOLI", cat:"Food Storage", qty:5, rrp:7, total:35},
-      {sku:"365201", name:"Vegetable Spoon", brand:"BRABANTIA", cat:"Preparation Utensils", qty:2, rrp:17, total:34},
-      {sku:"883309", name:"Spice Shaker Set 4 Units", brand:"Lekue", cat:"", qty:1, rrp:34, total:34},
-      {sku:"882227", name:"MINI CLASSIC STACKABLE ICE LOLLY MOL 4 U", brand:"Lekue", cat:"Ice Molds", qty:1, rrp:34, total:34},
-      {sku:"390634SVN021990", name:"FRIGOVERRE 2PCS SET(15X15-12)", brand:"BORMIOLI", cat:"Food Storage", qty:1, rrp:34, total:34},
-      {sku:"LA58545TRAS", name:"SET 2 MUG 420 CC (LYRA TRASPARENTE)", brand:"TOGNANA", cat:"", qty:2, rrp:17, total:34},
+      {sku:"170491070", name:"FOOD COVER POLYESTER 4ASS CLR", brand:"Koopman", cat:"", qty:7, rrp:5, total:35},
+      {sku:"6720305", name:"Apron In 100% Iridescent Cotton Slub Ocra 80X85", brand:"COINCASA", cat:"Aprons", qty:1, rrp:35, total:35},
+      {sku:"103600356844", name:"Tapered candle 245/24 mm cello - Wine Red", brand:"BOLSIUS", cat:"", qty:17, rrp:2, total:34},
+      {sku:"149245", name:"Bra Wash Bag White / Grey Zipper", brand:"BRABANTIA", cat:"Laundry Bags", qty:2, rrp:17, total:34},
       {sku:"365188", name:"Spatula, Large, Non-Stick", brand:"BRABANTIA", cat:"Preparation Utensils", qty:2, rrp:17, total:34},
-      {sku:"121807", name:"Tasty+ Nice & Handy / Bottle Opener(Light Grey)", brand:"BRABANTIA", cat:"", qty:2, rrp:17, total:34},
+      {sku:"365201", name:"Vegetable Spoon", brand:"BRABANTIA", cat:"Preparation Utensils", qty:2, rrp:17, total:34},
+      {sku:"LA58545TRAS", name:"SET 2 MUG 420 CC (LYRA TRASPARENTE)", brand:"TOGNANA", cat:"", qty:2, rrp:17, total:34},
       {sku:"389119MFB121990", name:"EVOLUTION 23X18", brand:"BORMIOLI", cat:"", qty:1, rrp:34, total:34},
+      {sku:"357764MDD121990", name:"QUATTRO STAG.VASO 2,0 L", brand:"BORMIOLI", cat:"Food Storage", qty:2, rrp:17, total:34},
+      {sku:"882227", name:"MINI CLASSIC STACKABLE ICE LOLLY MOL 4 U", brand:"Lekue", cat:"Ice Molds", qty:1, rrp:34, total:34},
+      {sku:"883309", name:"Spice Shaker Set 4 Units", brand:"Lekue", cat:"", qty:1, rrp:34, total:34},
+      {sku:"KO8TA695983", name:"RECT. CHOPPING BOARD CM40X22", brand:"TOGNANA", cat:"", qty:1, rrp:34, total:34},
       {sku:"IR61437M145", name:"MUG CC 350 IRIS KALEIDO (6 COLORI)", brand:"TOGNANA", cat:"", qty:3, rrp:11, total:33},
-      {sku:"IL17466", name:"8 Green Bath Oil Pearls - Fragrance: Apple", brand:"ISABELLE LAURIER", cat:"", qty:2, rrp:16, total:32},
-      {sku:"388820MEV121990R", name:"CONTAINER SQUARE 19x19 W/BLUE LID", brand:"BORMIOLI", cat:"", qty:2, rrp:16, total:32},
+      {sku:"W444425GGBO", name:"RING-SHAPED 24 CM", brand:"TOGNANA", cat:"", qty:1, rrp:33, total:33},
       {sku:"101924996979", name:"Frag. Glass + Lid 66/83 TJ OSS", brand:"BOLSIUS", cat:"", qty:2, rrp:16, total:32},
       {sku:"236044", name:"Ironing Board Cover B, 124x38cm 2mm Foam", brand:"BRABANTIA", cat:"Ironing Boards", qty:1, rrp:32, total:32},
+      {sku:"IL17466", name:"8 Green Bath Oil Pearls - Fragrance: Apple", brand:"ISABELLE LAURIER", cat:"", qty:2, rrp:16, total:32},
+      {sku:"CY5657110", name:"CLOTHES HANGER FELT SET 20PCS", brand:"Koopman", cat:"", qty:1, rrp:32, total:32},
+      {sku:"W444451GGBO", name:"SPRINGFORM CAKE PAN CM 20", brand:"TOGNANA", cat:"", qty:1, rrp:32, total:32},
       {sku:"CY5657100", name:"CLOTHES HANGER FELT SET 20PCS", brand:"Koopman", cat:"", qty:1, rrp:31, total:31},
-      {sku:"007257", name:"Lace embossed pearl 33x33", brand:"PAPER PRODUCTS", cat:"", qty:2, rrp:15, total:30},
+      {sku:"252068", name:"Microfibre Dish Cloths, Set of 2, 30x30 cm", brand:"BRABANTIA", cat:"", qty:5, rrp:6, total:30},
+      {sku:"365249", name:"Palette Knife, Non-Stick", brand:"BRABANTIA", cat:"Preparation Utensils", qty:2, rrp:15, total:30},
+      {sku:"170491080", name:"FOOD COVER POLYESTER 4ASS", brand:"Koopman", cat:"", qty:5, rrp:6, total:30},
+      {sku:"A12401520", name:"COLANDER WITH HANDLE DIA 24CM", brand:"Koopman", cat:"", qty:2, rrp:15, total:30},
       {sku:"7109241", name:"Porcelain Ginevra Teacup", brand:"COINCASA", cat:"", qty:1, rrp:29, total:29},
+      {sku:"133003303", name:"Rosalie Napkin", brand:"PAPER PRODUCTS", cat:"", qty:2, rrp:14, total:28},
+      {sku:"103922386032", name:"Star.glas+sc.+sleeve 82/68 CIT", brand:"BOLSIUS", cat:"", qty:4, rrp:7, total:28},
+      {sku:"133003013", name:"Turnowsky B?day Napkin", brand:"PAPER PRODUCTS", cat:"", qty:2, rrp:14, total:28},
       {sku:"1333649", name:"Butterfly Flowers", brand:"PAPER PRODUCTS", cat:"", qty:2, rrp:14, total:28},
+      {sku:"103600356882", name:"Tapered candle 245/24 mm cello - Gold", brand:"BOLSIUS", cat:"", qty:9, rrp:3, total:27},
       {sku:"117589", name:"Dish Brush with Suction Cup Holder Dark Grey", brand:"BRABANTIA", cat:"Brushes", qty:1, rrp:27, total:27},
       {sku:"149641", name:"Sneaker Wash Bag White / Grey Zipper", brand:"BRABANTIA", cat:"Laundry Care", qty:1, rrp:27, total:27},
-      {sku:"103600356882", name:"Tapered candle 245/24 mm cello - Gold", brand:"BOLSIUS", cat:"", qty:9, rrp:3, total:27},
-      {sku:"121920", name:"Nice & Handy Corkscrew", brand:"BRABANTIA", cat:"Preparation Utensils", qty:2, rrp:13, total:26},
-      {sku:"103600356844", name:"Tapered candle 245/24 mm cello - Wine Red", brand:"BOLSIUS", cat:"", qty:13, rrp:2, total:26},
       {sku:"A12401510", name:"COLANDER STAINLESS STEEL 21CM", brand:"Koopman", cat:"", qty:2, rrp:13, total:26},
+      {sku:"121920", name:"Nice & Handy Corkscrew", brand:"BRABANTIA", cat:"Preparation Utensils", qty:2, rrp:13, total:26},
+      {sku:"529000870", name:"SEWING KIT IN METALBOX 92PCS", brand:"Koopman", cat:"", qty:2, rrp:13, total:26},
       {sku:"RIG24200797", name:"POKE BOWL 20 CM RITUAL CREMA", brand:"TOGNANA", cat:"", qty:1, rrp:25, total:25},
       {sku:"7057288", name:"0.74 L Glass Jug With Lid", brand:"COINCASA", cat:"", qty:1, rrp:25, total:25},
-      {sku:"103623220332", name:"Flame bowl 223/66 CIT", brand:"BOLSIUS", cat:"", qty:1, rrp:24, total:24},
-      {sku:"123122", name:"Chopping Board, Medium,", brand:"BRABANTIA", cat:"Cutting Boards", qty:1, rrp:24, total:24},
-      {sku:"7446523", name:"PLACEMAT , TOV.PVC DOPP.CORN.GREY", brand:"COINCASA", cat:"", qty:2, rrp:12, total:24},
-      {sku:"170491080", name:"FOOD COVER POLYESTER 4ASS", brand:"Koopman", cat:"", qty:4, rrp:6, total:24},
+      {sku:"KH1000050", name:"CLOTHES HANGER CHILDREN 2PCS", brand:"Koopman", cat:"", qty:3, rrp:8, total:24},
+      {sku:"CY185456231", name:"SET 2 MUGs 400 cc (CINDY YOU & ME)", brand:"TOGNANA", cat:"", qty:1, rrp:24, total:24},
+      {sku:"882425", name:"STAR ICE CUBE TRAY", brand:"Lekue", cat:"Ice Molds", qty:1, rrp:24, total:24},
+      {sku:"KO8TA685983", name:"ROUND CHOPPING BOARD CM25", brand:"TOGNANA", cat:"", qty:1, rrp:24, total:24},
       {sku:"170488840", name:"CORKSCREW ZINC", brand:"Koopman", cat:"", qty:1, rrp:23, total:23},
       {sku:"KH3000010", name:"CLOTHES HANGER SET 6PCS WOOD", brand:"Koopman", cat:"", qty:1, rrp:22, total:22},
-      {sku:"IL16422", name:"Bath Mitt Unicorn - 100% Cotton", brand:"ISABELLE LAURIER", cat:"", qty:1, rrp:22, total:22},
       {sku:"388910MFB121990", name:"CONTAINER SQUARE 22x22 W/BLUE LID", brand:"BORMIOLI", cat:"Food Storage", qty:1, rrp:22, total:22},
-      {sku:"103922386032", name:"Star.glas+sc.+sleeve 82/68 CIT", brand:"BOLSIUS", cat:"", qty:3, rrp:7, total:21},
-      {sku:"RE1PI685957", name:"PLATE CM 21X16", brand:"TOGNANA", cat:"", qty:1, rrp:21, total:21},
-      {sku:"280207", name:"ReNew Soap Dish Dark Grey", brand:"BRABANTIA", cat:"Soap Dishes", qty:1, rrp:20, total:20},
-      {sku:"101925066779", name:"Frag. diffuser 80 ml TJ OSS", brand:"BOLSIUS", cat:"", qty:1, rrp:20, total:20},
-      {sku:"170491070", name:"FOOD COVER POLYESTER 4ASS CLR", brand:"Koopman", cat:"", qty:4, rrp:5, total:20},
-      {sku:"LA5850ATRAS", name:"SET 6 COFFEE CUP 130 CC (LYRA TRASPARENTE)", brand:"TOGNANA", cat:"", qty:1, rrp:20, total:20},
+      {sku:"IL16422", name:"Bath Mitt Unicorn - 100% Cotton", brand:"ISABELLE LAURIER", cat:"", qty:1, rrp:22, total:22},
+      {sku:"N3585A0TRAS", name:"LOUNGE - SET 6 TUMBLER CC350", brand:"TOGNANA", cat:"", qty:1, rrp:22, total:22},
+      {sku:"IL16423", name:"Bath Mitt Instafamous - 100% Cotton", brand:"ISABELLE LAURIER", cat:"", qty:1, rrp:22, total:22},
+      {sku:"7366191", name:"2 MAT ROT.VERDE PLACEMAT", brand:"COINCASA", cat:"Placemats", qty:1, rrp:21, total:21},
       {sku:"357763MDD121990", name:"QUATTRO STAG.VASO 3,0 L", brand:"BORMIOLI", cat:"Food Storage", qty:1, rrp:20, total:20},
+      {sku:"280207", name:"ReNew Soap Dish Dark Grey", brand:"BRABANTIA", cat:"Soap Dishes", qty:1, rrp:20, total:20},
+      {sku:"349750MDE121990", name:"JAR 0,5 LID MOUNTED", brand:"BORMIOLI", cat:"Food Storage", qty:4, rrp:5, total:20},
+      {sku:"LA5850ATRAS", name:"SET 6 COFFEE CUP 130 CC (LYRA TRASPARENTE)", brand:"TOGNANA", cat:"", qty:1, rrp:20, total:20},
+      {sku:"RIG68140880", name:"BOWL CM 14", brand:"TOGNANA", cat:"Bowls", qty:2, rrp:10, total:20},
+      {sku:"101925066779", name:"Frag. diffuser 80 ml TJ OSS", brand:"BOLSIUS", cat:"", qty:1, rrp:20, total:20},
       {sku:"6784514", name:"Set Of 2 Pot Holders In Cotton With Flowers Print Potholder", brand:"COINCASA", cat:"Mittens", qty:1, rrp:19, total:19},
+      {sku:"7155732", name:"KITCHEN MITTEN , GC SLUB NATURAL RICAMO 17", brand:"COINCASA", cat:"Mittens", qty:1, rrp:19, total:19},
       {sku:"339140MEZ121990", name:"FRIGOVERRE 12 ALTA", brand:"BORMIOLI", cat:"", qty:2, rrp:9, total:18},
-      {sku:"252068", name:"Microfibre Dish Cloths, Set of 2, 30x30 cm", brand:"BRABANTIA", cat:"", qty:3, rrp:6, total:18},
-      {sku:"365225", name:"Soup Ladle, Non-Stick", brand:"BRABANTIA", cat:"Preparation Utensils", qty:1, rrp:17, total:17},
-      {sku:"149245", name:"Bra Wash Bag White / Grey Zipper", brand:"BRABANTIA", cat:"Laundry Bags", qty:1, rrp:17, total:17},
-      {sku:"123085", name:"Chopping Board, Small,", brand:"BRABANTIA", cat:"Cutting Boards", qty:1, rrp:17, total:17},
+      {sku:"IL17624", name:"Bath Bomb Unicorn Dream - Fragrance: Passion Fruit 175G", brand:"ISABELLE LAURIER", cat:"", qty:1, rrp:18, total:18},
       {sku:"365102", name:"Skimmer/Strainer Spoon, Non-stick", brand:"BRABANTIA", cat:"Preparation Utensils", qty:1, rrp:17, total:17},
-      {sku:"357764MDD121990", name:"QUATTRO STAG.VASO 2,0 L", brand:"BORMIOLI", cat:"Food Storage", qty:1, rrp:17, total:17},
-      {sku:"IR61440M276", name:"MUG CUP 440 CC", brand:"TOGNANA", cat:"", qty:1, rrp:16, total:16},
-      {sku:"101924996956", name:"Frag. Glass + Lid 66/83 TJ FBS", brand:"BOLSIUS", cat:"", qty:1, rrp:16, total:16},
+      {sku:"123085", name:"Chopping Board, Small,", brand:"BRABANTIA", cat:"Cutting Boards", qty:1, rrp:17, total:17},
+      {sku:"365225", name:"Soup Ladle, Non-Stick", brand:"BRABANTIA", cat:"Preparation Utensils", qty:1, rrp:17, total:17},
+      {sku:"IL42255", name:"Scrub Gloves Peach - 2 Pieces", brand:"ISABELLE LAURIER", cat:"", qty:1, rrp:17, total:17},
       {sku:"101924996969", name:"Frag. Glass + Lid 66/83 TJ WWN", brand:"BOLSIUS", cat:"", qty:1, rrp:16, total:16},
-      {sku:"122804", name:"Spatula plus Cutting Edge,", brand:"BRABANTIA", cat:"Preparation Utensils", qty:1, rrp:16, total:16},
+      {sku:"IR61440M276", name:"MUG CUP 440 CC", brand:"TOGNANA", cat:"", qty:1, rrp:16, total:16},
       {sku:"101924996975", name:"Frag. Glass + Lid 66/83 TJ VDL", brand:"BOLSIUS", cat:"", qty:1, rrp:16, total:16},
-      {sku:"A12401520", name:"COLANDER WITH HANDLE DIA 24CM", brand:"Koopman", cat:"", qty:1, rrp:15, total:15},
-      {sku:"365249", name:"Palette Knife, Non-Stick", brand:"BRABANTIA", cat:"Preparation Utensils", qty:1, rrp:15, total:15},
-      {sku:"335160MEX121990", name:"CONTAINER SYSTEM 21x13 W/BLUE LID", brand:"BORMIOLI", cat:"Food Storage", qty:1, rrp:15, total:15},
+      {sku:"122804", name:"Spatula plus Cutting Edge,", brand:"BRABANTIA", cat:"Preparation Utensils", qty:1, rrp:16, total:16},
       {sku:"121746", name:"Kitchen Scissors,", brand:"BRABANTIA", cat:"Scissors", qty:1, rrp:15, total:15},
       {sku:"133002782", name:"Amsterdam Floral Napkin", brand:"PAPER PRODUCTS", cat:"", qty:1, rrp:14, total:14},
-      {sku:"133002587", name:"Happy Leo Napkin", brand:"PAPER PRODUCTS", cat:"", qty:1, rrp:14, total:14},
-      {sku:"103630526700", name:"CC tealight 6hr pck24 WHI", brand:"BOLSIUS", cat:"", qty:1, rrp:14, total:14},
-      {sku:"133003013", name:"Turnowsky B?day Napkin", brand:"PAPER PRODUCTS", cat:"", qty:1, rrp:14, total:14},
-      {sku:"KH3000030", name:"CLOTHES HANGER SET3 EUCALYPTUS", brand:"Koopman", cat:"", qty:1, rrp:14, total:14},
-      {sku:"133003303", name:"Rosalie Napkin", brand:"PAPER PRODUCTS", cat:"", qty:1, rrp:14, total:14},
-      {sku:"1332507", name:"Napkin 33x33 cm", brand:"PAPER PRODUCTS", cat:"Tissues", qty:1, rrp:14, total:14},
       {sku:"133002985", name:"Bees & Flowers Napkin", brand:"PAPER PRODUCTS", cat:"", qty:1, rrp:14, total:14},
       {sku:"133003289", name:"Cherry & Stripes Napkin", brand:"PAPER PRODUCTS", cat:"", qty:1, rrp:14, total:14},
+      {sku:"133002587", name:"Happy Leo Napkin", brand:"PAPER PRODUCTS", cat:"", qty:1, rrp:14, total:14},
+      {sku:"KH3000030", name:"CLOTHES HANGER SET3 EUCALYPTUS", brand:"Koopman", cat:"", qty:1, rrp:14, total:14},
+      {sku:"103630526700", name:"CC tealight 6hr pck24 WHI", brand:"BOLSIUS", cat:"", qty:1, rrp:14, total:14},
       {sku:"116582", name:"PerfectFit Bags V, 2-3 litre [20 bags per roll] White", brand:"BRABANTIA", cat:"Bin Liners", qty:2, rrp:7, total:14},
-      {sku:"529000870", name:"SEWING KIT IN METALBOX 92PCS", brand:"Koopman", cat:"", qty:1, rrp:13, total:13},
+      {sku:"1332507", name:"Napkin 33x33 cm", brand:"PAPER PRODUCTS", cat:"Tissues", qty:1, rrp:14, total:14},
+      {sku:"793000170", name:"SOAP DISPENCER STONEWARE 4ASS", brand:"Koopman", cat:"", qty:1, rrp:14, total:14},
+      {sku:"233002522", name:"Spring Blossoms Napkin", brand:"PAPER PRODUCTS", cat:"", qty:1, rrp:14, total:14},
+      {sku:"103600356811", name:"Tapered candle 245/24 mm cello - Yellow", brand:"BOLSIUS", cat:"", qty:6, rrp:2, total:12},
       {sku:"133450MT9021990P", name:"BAVIERA BOCCALE 0,5 /-/", brand:"BORMIOLI", cat:"", qty:1, rrp:12, total:12},
-      {sku:"WK1500040", name:"CLOTHES PEGS 24PCS BAMBOO", brand:"Koopman", cat:"", qty:3, rrp:4, total:12},
-      {sku:"HA000230000", name:"DINNER PLATE CM 23", brand:"TOGNANA", cat:"", qty:1, rrp:12, total:12},
-      {sku:"RE1CTBPM274", name:"ALMOND BOWL 3 COLORS ASS", brand:"TOGNANA", cat:"", qty:2, rrp:6, total:12},
       {sku:"103600356805", name:"Tapered candle 245/24 mm cello - Ivory", brand:"BOLSIUS", cat:"", qty:6, rrp:2, total:12},
       {sku:"103631086700", name:"Maxi light 8hr pck12 WHI", brand:"BOLSIUS", cat:"", qty:1, rrp:12, total:12},
       {sku:"117688", name:"Microfibre Dish Cloths, Set of 2, 30x30 cm Light Grey", brand:"BRABANTIA", cat:"Cloths", qty:2, rrp:6, total:12},
-      {sku:"RIG68140797", name:"BOWL CM 14 RITUAL CREMA", brand:"TOGNANA", cat:"", qty:1, rrp:10, total:10},
-      {sku:"349750MDE121990", name:"JAR 0,5 LID MOUNTED", brand:"BORMIOLI", cat:"Food Storage", qty:2, rrp:5, total:10},
+      {sku:"HA000230000", name:"DINNER PLATE CM 23", brand:"TOGNANA", cat:"", qty:1, rrp:12, total:12},
+      {sku:"WK1500040", name:"CLOTHES PEGS 24PCS BAMBOO", brand:"Koopman", cat:"", qty:3, rrp:4, total:12},
+      {sku:"RE1CTBPM274", name:"ALMOND BOWL 3 COLORS ASS", brand:"TOGNANA", cat:"", qty:2, rrp:6, total:12},
+      {sku:"IL16398", name:"BATH DUCK PRINCESS", brand:"ISABELLE LAURIER", cat:"", qty:1, rrp:11, total:11},
+      {sku:"IL16394", name:"BATH DUCK DINO", brand:"ISABELLE LAURIER", cat:"", qty:1, rrp:11, total:11},
       {sku:"RIG14370797", name:"MUG CC 370 (RITUAL CREMA)", brand:"TOGNANA", cat:"", qty:1, rrp:10, total:10},
-      {sku:"RIG68140880", name:"BOWL CM 14", brand:"TOGNANA", cat:"Bowls", qty:1, rrp:10, total:10},
+      {sku:"RIG68140797", name:"BOWL CM 14 RITUAL CREMA", brand:"TOGNANA", cat:"", qty:1, rrp:10, total:10},
+      {sku:"42947-23", name:"Bread Basketrectangular Poly-Rattan", brand:"Paderno", cat:"", qty:1, rrp:10, total:10},
+      {sku:"IL18380", name:"Yellow Bath Toy Ducky 100% Vinyl", brand:"ISABELLE LAURIER", cat:"", qty:1, rrp:10, total:10},
       {sku:"IL42211", name:"PURPLE SHOWER SPONGE", brand:"ISABELLE LAURIER", cat:"", qty:1, rrp:9, total:9},
       {sku:"529003270", name:"LINT REMOVER REUSABLE GREY CLR", brand:"Koopman", cat:"", qty:1, rrp:8, total:8},
-      {sku:"103600356811", name:"Tapered candle 245/24 mm cello - Yellow", brand:"BOLSIUS", cat:"", qty:4, rrp:2, total:8},
-      {sku:"KH1000050", name:"CLOTHES HANGER CHILDREN 2PCS", brand:"Koopman", cat:"", qty:1, rrp:8, total:8},
       {sku:"7109273", name:"SMALL PLATE 10CM GINEVRA BLACK RIM", brand:"COINCASA", cat:"", qty:1, rrp:8, total:8},
-      {sku:"103600356881", name:"Tapered candle 245/24 mm cello - Silver", brand:"BOLSIUS", cat:"", qty:2, rrp:3, total:6},
       {sku:"349760MDE121990", name:"JAR 0,7 LID MOUNTED", brand:"BORMIOLI", cat:"Food Storage", qty:1, rrp:6, total:6},
+      {sku:"103600356881", name:"Tapered candle 245/24 mm cello - Silver", brand:"BOLSIUS", cat:"", qty:2, rrp:3, total:6},
+      {sku:"365630MDE121990", name:"JAR ANFORA 0,50 LID MOUNTED", brand:"BORMIOLI", cat:"Food Storage", qty:1, rrp:6, total:6},
+      {sku:"365610MDE121990", name:"QUATTRO STAG. JAR ANFORA 0,30 LID MOUNTED", brand:"BORMIOLI", cat:"Food Storage", qty:1, rrp:5, total:5},
       {sku:"103600356802", name:"Tapered candle 245/24 mm cello - White", brand:"BOLSIUS", cat:"", qty:1, rrp:2, total:2}
     ]
   };
@@ -804,8 +863,11 @@
     "0": {label:"08.08–16.08.2026", qty:104, total:2211, uniqueSku:66, topBrand:"BRABANTIA", topBrandTotal:772},
     "1": {label:"17.08–23.08.2026", qty:103, total:2174, uniqueSku:76, topBrand:"BRABANTIA", topBrandTotal:678},
     "2": {label:"24.08–31.08.2026", qty:136, total:3259, uniqueSku:90, topBrand:"BRABANTIA", topBrandTotal:1051},
-    "all": {label:"08.08–31.08.2026 (весь период)", qty:343, total:7644, uniqueSku:166, topBrand:"BRABANTIA", topBrandTotal:2501}
-  };
+    "3": {label:"01.09–06.09.2026", qty:102, total:2145, uniqueSku:76, topBrand:"BRABANTIA", topBrandTotal:457},
+    "aug": {label:"Август (08.08–31.08.2026)", qty:343, total:7644, uniqueSku:166, topBrand:"BRABANTIA", topBrandTotal:2501},
+    "sep": {label:"Сентябрь (01.09–06.09.2026)", qty:102, total:2145, uniqueSku:76, topBrand:"BRABANTIA", topBrandTotal:457},
+    "all": {label:"Весь период (08.08–06.09.2026)", qty:445, total:9789, uniqueSku:199, topBrand:"BRABANTIA", topBrandTotal:2958}
+  };;
 
   function renderWeeklyKpis(periodKey) {
     var p = PERIOD_KPI[periodKey] || PERIOD_KPI.all;
@@ -876,7 +938,7 @@
     renderWeeklyRankings();
   }
 function renderCatalogCoverage() {
-    var CATALOG_TOTAL = 493; // active SKUs actually in shipment as of 2026-08-31
+    var CATALOG_TOTAL = 493; // active SKUs actually in shipment as of 2026-09-06
     var soldCount = WEEKLY.sku.length;
     var unsoldCount = CATALOG_TOTAL - soldCount;
     var soldPct = CATALOG_TOTAL ? (soldCount / CATALOG_TOTAL * 100) : 0;
@@ -1684,5 +1746,6 @@ function computeWeeklySettlement() {
 </script>
 
 
-</body>
-</html>
+
+
+</body></html>
