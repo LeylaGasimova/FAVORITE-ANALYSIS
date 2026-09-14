@@ -204,9 +204,25 @@
        текущие взаиморасчёты.</p>
 
     <div class="kpi-group-label">Отгружено (факт)</div>
-    <div class="kpi-row" id="kpi-shipped"></div>
+    <div class="kpi-row">
+      <div class="kpi"><div class="kpi-label">Отгружено SKU</div><div class="kpi-value">508</div></div>
+      <div class="kpi"><div class="kpi-label">Отгружено, шт</div><div class="kpi-value">2 614</div></div>
+      <div class="kpi"><div class="kpi-label">Отгружено по RRP, AZN</div><div class="kpi-value">86 135</div></div>
+      <div class="kpi"><div class="kpi-label">Отгружено по себестоимости, AZN</div><div class="kpi-value">27 037</div></div>
+      <div class="kpi"><div class="kpi-label">Брендов в поставке</div><div class="kpi-value">19</div></div>
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-top:6px;">По 32 SKU (108 шт, 7 715 AZN по RRP) себестоимость неизвестна — в сумму по себестоимости не включена.</div>
 
-    <div class="kpi-group-label">Продано (по понедельной аналитике)</div>
+    <div class="kpi-group-label" style="margin-top:18px;">Остаток на складе Favorit (расчётно, на 14.09.2026)</div>
+    <div class="kpi-row">
+      <div class="kpi"><div class="kpi-label">Остаток, шт</div><div class="kpi-value">1 837</div></div>
+      <div class="kpi"><div class="kpi-label">Остаток по RRP, AZN</div><div class="kpi-value">58 922</div></div>
+      <div class="kpi"><div class="kpi-label">Остаток по себестоимости, AZN</div><div class="kpi-value">20 051</div></div>
+      <div class="kpi"><div class="kpi-label">SKU с остатком</div><div class="kpi-value">490 из 508</div></div>
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-top:6px;">Расчётный остаток = отгружено − продано − возвращено (по данным DEBTS), не физическая инвентаризация. По 8 SKU (15 шт, 775 AZN по RRP) себестоимость неизвестна.</div>
+
+    <div class="kpi-group-label" style="margin-top:18px;">Продано (по понедельной аналитике)</div>
     <div class="kpi-row" id="kpi-sold"></div>
 
 
@@ -424,16 +440,6 @@
   var CAT_COLORS = ["var(--c1)","var(--c2)","var(--c3)","var(--c4)","var(--c5)","var(--c6)","var(--c7)","var(--c8)"];
 
   function renderKPIs() {
-    var shippedTiles = [
-      { label: "Отгружено SKU", value: fmt0(DATA.total_sku) },
-      { label: "Отгружено, шт", value: fmt0(DATA.total_qty) },
-      { label: "Отгружено на сумму (RRP), AZN", value: fmt0(DATA.total_value) },
-      { label: "Брендов в поставке", value: fmt0(DATA.brands.length) }
-    ];
-    document.getElementById("kpi-shipped").innerHTML = shippedTiles.map(function (t) {
-      return '<div class="kpi"><div class="kpi-label">' + t.label + '</div><div class="kpi-value">' + t.value + '</div></div>';
-    }).join("");
-
     var soldTiles = [
       { label: "Продано, шт", value: "0" },
       { label: "Оборот по RRP, AZN", value: "0" },
@@ -1705,7 +1711,7 @@ function computeWeeklySettlement() {
       { label: "Ни разу не продавались", value: fmt0(deadCount) + " (" + deadPct.toFixed(0) + "%)" },
       { label: "50% оборота даёт", value: fmt0(r50) + " SKU из " + fmt0(soldCount) },
       { label: "80% оборота даёт", value: fmt0(r80) + " SKU из " + fmt0(soldCount) },
-      { label: "Физически в наличии у Favorit (02.09)", value: "495 SKU" }
+      { label: "В остатке расчётно (14.09.2026)", value: "490 из " + fmt0(catalogTotal) + " SKU" }
     ];
     document.getElementById("kpi-deep").innerHTML = tiles.map(function (t) {
       return '<div class="kpi"><div class="kpi-label">' + esc(t.label) + '</div><div class="kpi-value">' + t.value + '</div></div>';
