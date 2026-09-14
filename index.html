@@ -218,9 +218,9 @@
       <div class="kpi"><div class="kpi-label">Остаток, шт</div><div class="kpi-value">1 837</div></div>
       <div class="kpi"><div class="kpi-label">Остаток по RRP, AZN</div><div class="kpi-value">58 922</div></div>
       <div class="kpi"><div class="kpi-label">Остаток по себестоимости, AZN</div><div class="kpi-value">20 051</div></div>
-      <div class="kpi"><div class="kpi-label">SKU с остатком</div><div class="kpi-value">490 из 508</div></div>
+      <div class="kpi"><div class="kpi-label">SKU с остатком</div><div class="kpi-value">491 из 533</div></div>
     </div>
-    <div style="font-size:11px;color:var(--muted);margin-top:6px;">Расчётный остаток = отгружено − продано − возвращено (по данным DEBTS), не физическая инвентаризация. По 8 SKU (15 шт, 775 AZN по RRP) себестоимость неизвестна.</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:6px;">Расчётный остаток = отгружено − продано − возвращено (по данным DEBTS), не физическая инвентаризация. 533 — все отслеживаемые в DEBTS коды (в т.ч. позиции, снятые с текущего прайс-листа); из них 490 относятся к 508 SKU текущего прайс-листа. По 8 SKU (15 шт, 775 AZN по RRP) себестоимость неизвестна. Известна 1 позиция (BORMIOLI 335160MEX121990) с продано &gt; отгружено на 1 шт — данные по ней нужно сверить с 1С.</div>
 
     <div class="kpi-group-label" style="margin-top:18px;">Продано (по понедельной аналитике)</div>
     <div class="kpi-row" id="kpi-sold"></div>
@@ -1711,7 +1711,7 @@ function computeWeeklySettlement() {
       { label: "Ни разу не продавались", value: fmt0(deadCount) + " (" + deadPct.toFixed(0) + "%)" },
       { label: "50% оборота даёт", value: fmt0(r50) + " SKU из " + fmt0(soldCount) },
       { label: "80% оборота даёт", value: fmt0(r80) + " SKU из " + fmt0(soldCount) },
-      { label: "В остатке расчётно (14.09.2026)", value: "490 из " + fmt0(catalogTotal) + " SKU" }
+      { label: "В остатке расчётно (14.09.2026)", value: "491 из 533 SKU" }
     ];
     document.getElementById("kpi-deep").innerHTML = tiles.map(function (t) {
       return '<div class="kpi"><div class="kpi-label">' + esc(t.label) + '</div><div class="kpi-value">' + t.value + '</div></div>';
