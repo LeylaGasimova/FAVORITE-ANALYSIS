@@ -181,7 +181,7 @@
       <span class="brand-mark">FAVORIT · Дистрибуция</span>
       <span class="brand-sub">Отгрузка и продажи, консигнация с комиссией 20%</span>
     </div>
-    <span class="snapshot-badge">Отгрузка обновлена: 12.09.2026 · продажи по 06.09.2026</span>
+    <span class="snapshot-badge">Отгрузка обновлена: 12.09.2026 · продажи по 13.09.2026</span>
   </div>
   <nav class="subnav">
     <a href="#brands">Бренды</a>
@@ -254,16 +254,17 @@
   <section id="weekly">
     <div class="section-head">
       <h2>Понедельная аналитика продаж</h2>
-      <div class="section-note">Чистые продажи по факту (без долгов и оплат) — 08.08–06.09.2026 (30 дней), по данным POS Favorit. Кнопки ниже: недели и месяцы.</div>
+      <div class="section-note">Чистые продажи по факту (без долгов и оплат) — 08.08–13.09.2026 (37 дней), по данным POS Favorit. Кнопки ниже: недели и месяцы.</div>
     </div>
 
-    <div class="kpi-group-label" id="kpi-weekly-label">Весь период (08.08–06.09.2026)</div>
+    <div class="kpi-group-label" id="kpi-weekly-label">Весь период (08.08–13.09.2026)</div>
     <div style="display:flex; gap:6px; margin: 0 0 10px; flex-wrap:wrap;" id="period-picker">
       <button type="button" class="brand-chip active" data-period="all">Весь период</button>
       <button type="button" class="brand-chip" data-period="0">08.08–16.08</button>
       <button type="button" class="brand-chip" data-period="1">17.08–23.08</button>
       <button type="button" class="brand-chip" data-period="2">24.08–31.08</button>
       <button type="button" class="brand-chip" data-period="3">01.09–06.09</button>
+      <button type="button" class="brand-chip" data-period="4">07.09–13.09</button>
       <span style="width:1px;background:var(--hairline);margin:2px 4px;"></span>
       <button type="button" class="brand-chip" data-period="aug">Август</button>
       <button type="button" class="brand-chip" data-period="sep">Сентябрь</button>
@@ -301,11 +302,11 @@
     <div class="card" style="margin-top:14px;">
       <div class="section-note" style="margin-bottom:10px;">Динамика по неделям, оборот по RRP AZN</div>
       <svg id="weekly-trend-svg" class="chart-svg" viewBox="0 0 900 200"></svg>
-      <div style="font-size:11.5px;color:var(--muted);margin-top:8px;">За 30 дней (3 недели августа + первая неделя сентября) виден рост от недели к неделе; сентябрь пока показан неполной неделей 01.09–06.09.2026.</div>
+      <div style="font-size:11.5px;color:var(--muted);margin-top:8px;">За 37 дней (4 недели августа/начала сентября + неделя 07.09–13.09) виден рост от недели к неделе.</div>
     </div>
 
     <div class="card" style="margin-top:14px;">
-      <div class="section-note" style="margin-bottom:10px;">Все проданные SKU (накопительно с 08.08 по 06.09.2026, 199 позиций)</div>
+      <div class="section-note" style="margin-bottom:10px;">Все проданные SKU (накопительно с 08.08 по 13.09.2026, 239 позиций)</div>
       <div class="scroll-x"><table id="weekly-sku-table"></table></div>
     </div>
   </section>
@@ -313,7 +314,7 @@
   <section id="deep">
     <div class="section-head">
       <h2>Глубокая аналитика по SKU</h2>
-      <div class="section-note">Что именно делает оборот, а что не продаётся ни разу — понедельная аналитика (08.08–06.09.2026, 30 дней) против полного каталога товаров в отгрузке.</div>
+      <div class="section-note">Что именно делает оборот, а что не продаётся ни разу — понедельная аналитика (08.08–13.09.2026, 37 дней) против полного каталога товаров в отгрузке.</div>
     </div>
 
     <div class="kpi-row" id="kpi-deep"></div>
@@ -343,7 +344,7 @@
     </div>
 
     <div class="card" style="margin-top:14px;">
-      <div class="section-note" style="margin-bottom:2px;">Полный список SKU без единой продажи с 08.08 по 06.09.2026 (по убыванию RRP)</div><div id="dead-full-total" style="font-size:13px;font-weight:700;margin-bottom:10px;"></div>
+      <div class="section-note" style="margin-bottom:2px;">Полный список SKU без единой продажи с 08.08 по 13.09.2026 (по убыванию RRP)</div><div id="dead-full-total" style="font-size:13px;font-weight:700;margin-bottom:10px;"></div>
       <div class="scroll-x" style="max-height:520px; overflow-y:auto;"><table id="dead-full-table"></table></div>
     </div>
   </section>
@@ -351,7 +352,7 @@
   <section id="trend">
     <div class="section-head">
       <h2>Динамика продаж по месяцам</h2>
-      <div class="section-note">Август (08.08–31.08.2026) закрыт; сентябрь показан по неделе 01.09–06.09.2026 (неполный месяц). Остальные месяцы добавятся по мере поступления данных.</div>
+      <div class="section-note">Август (08.08–31.08.2026) закрыт; сентябрь показан по 01.09–13.09.2026 (неполный месяц). Остальные месяцы добавятся по мере поступления данных.</div>
     </div>
     <div class="card">
       <div class="chart-wrap" style="position:relative;">
@@ -380,7 +381,7 @@
     </div>
 
     <div class="card" style="margin-top:14px;">
-      <div class="section-note" style="margin-bottom:10px;">Валовая (гросс) маржа от безНДСной RRP, до и после выплаты 20% комиссии Favorit. Август и сентябрь — отдельно (сентябрь — неполный месяц, 01.09–06.09.2026)</div>
+      <div class="section-note" style="margin-bottom:10px;">Валовая (гросс) маржа от безНДСной RRP, до и после выплаты 20% комиссии Favorit. Август и сентябрь — отдельно (сентябрь — неполный месяц, 01.09–13.09.2026). По 1 позиции недели (SKU 242267, нет в Прайс-листе) себестоимость не учтена (43 AZN розничной суммы).</div>
       <div class="scroll-x">
         <table>
 
@@ -388,15 +389,15 @@
 
           <tbody>
 
-            <tr><td>Оборот без НДС (продано)</td><td class="num">6 478</td><td class="num">100,0%</td><td class="num">1 819</td><td class="num">100,0%</td></tr>
+            <tr><td>Оборот без НДС (продано)</td><td class="num">6 478</td><td class="num">100,0%</td><td class="num">4 528</td><td class="num">100,0%</td></tr>
 
-            <tr><td>Себестоимость проданного</td><td class="num">2 727</td><td class="num">42,1%</td><td class="num">856</td><td class="num">47,1%</td></tr>
+            <tr><td>Себестоимость проданного</td><td class="num">2 727</td><td class="num">42,1%</td><td class="num">1 993</td><td class="num">44,0%</td></tr>
 
-            <tr style="font-weight:700;background:var(--good-wash);"><td>Гросс маржа ДО выплаты 20%</td><td class="num">3 751</td><td class="num">57,9%</td><td class="num">963</td><td class="num">52,9%</td></tr>
+            <tr style="font-weight:700;background:var(--good-wash);"><td>Гросс маржа ДО выплаты 20%</td><td class="num">3 751</td><td class="num">57,9%</td><td class="num">2 535</td><td class="num">56,0%</td></tr>
 
-            <tr><td>Комиссия Favorit 20%</td><td class="num">1 296</td><td class="num">20,0%</td><td class="num">364</td><td class="num">20,0%</td></tr>
+            <tr><td>Комиссия Favorit 20%</td><td class="num">1 296</td><td class="num">20,0%</td><td class="num">906</td><td class="num">20,0%</td></tr>
 
-            <tr style="font-weight:700;background:var(--warning-wash);"><td>Гросс маржа ПОСЛЕ выплаты 20%</td><td class="num">2 455</td><td class="num">37,9%</td><td class="num">599</td><td class="num">32,9%</td></tr>
+            <tr style="font-weight:700;background:var(--warning-wash);"><td>Гросс маржа ПОСЛЕ выплаты 20%</td><td class="num">2 455</td><td class="num">37,9%</td><td class="num">1 629</td><td class="num">35,9%</td></tr>
 
           </tbody>
 
@@ -518,7 +519,7 @@
     var W = 900, H = 260, ML = 50, MR = 16, MT = 16, MB = 30;
     var plotW = W - ML - MR, plotH = H - MT - MB;
     function x(i) { return ML + i * (plotW / 11); }
-    var MONTH_DATA = { 7: { qty: 343, total: 7644 }, 8: { qty: 102, total: 2145 } }; // Aug(7) закрыт 08.08-31.08 ; Sep(8) частично 01.09-06.09.2026
+    var MONTH_DATA = { 7: { qty: 343, total: 7644 }, 8: { qty: 238, total: 5332 } }; // Aug(7) закрыт 08.08-31.08 ; Sep(8) частично 01.09-13.09.2026
     var maxVal = 10000;
     Object.keys(MONTH_DATA).forEach(function (k) { if (MONTH_DATA[k].total > maxVal * 0.85) maxVal = MONTH_DATA[k].total / 0.7; });
     function y(v) { return MT + plotH - (v / maxVal * plotH); }
