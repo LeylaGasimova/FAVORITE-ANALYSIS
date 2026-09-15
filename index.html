@@ -1687,21 +1687,21 @@ function computeWeeklySettlement() {
   ];
 
   var DEAD_BY_BRAND = [
-    {name:"BRABANTIA", count:61, value:5078},
-    {name:"NACHTMANN", count:25, value:3361},
-    {name:"COINCASA", count:42, value:2210},
-    {name:"TOGNANA", count:20, value:1187},
+    {name:"BRABANTIA", count:58, value:4996},
+    {name:"NACHTMANN", count:24, value:3270},
+    {name:"COINCASA", count:40, value:2165},
     {name:"SCOTTISH FINE SOAPS", count:25, value:1092},
-    {name:"Koopman", count:25, value:1026},
-    {name:"Paderno", count:12, value:913},
-    {name:"ISABELLE LAURIER", count:49, value:864},
-    {name:"BORMIOLI", count:15, value:405},
-    {name:"TVS", count:7, value:370},
+    {name:"Koopman", count:24, value:983},
+    {name:"Paderno", count:10, value:822},
+    {name:"TOGNANA", count:14, value:665},
+    {name:"ISABELLE LAURIER", count:34, value:653},
     {name:"KARE", count:2, value:350},
+    {name:"BORMIOLI", count:10, value:339},
     {name:"VILLEROY & BOCH", count:2, value:322},
-    {name:"Lekue", count:8, value:297},
     {name:"HELIOS", count:8, value:292},
-    {name:"PAPER PRODUCTS", count:15, value:211},
+    {name:"Lekue", count:7, value:277},
+    {name:"TVS", count:5, value:254},
+    {name:"PAPER PRODUCTS", count:14, value:197},
     {name:"GUZZINI", count:2, value:99},
     {name:"BOLSIUS", count:3, value:62},
     {name:"BUGATTI", count:1, value:19}
@@ -1727,7 +1727,7 @@ function computeWeeklySettlement() {
     }).join("");
     var noteEl = document.getElementById("pareto-note");
     if (noteEl) {
-      noteEl.textContent = "Показаны первые 40 из " + soldCount + " продававшихся SKU. 50% оборота дают первые " + r50 + " SKU, 80% оборота — первые " + r80 + " SKU. Ниже — все " + deadCount + " позиций каталога (из " + catalogTotal + "), которые ни разу не продавались с 08.08 по 06.09.2026, потенциал по RRP " + fmt0(deadValue) + " AZN. Отдельно по факт.остатку Favorit на 02.09: все 495 их позиций сопоставлены с нашими SKU — из них 342 лежат нетронутыми (ни разу не продавались), у 153 часть уже продана, а остаток ещё стоит на полке.";
+      noteEl.textContent = "Показаны первые 40 из " + soldCount + " продававшихся SKU. 50% оборота дают первые " + r50 + " SKU, 80% оборота — первые " + r80 + " SKU. Ниже — все " + deadCount + " позиций каталога (из " + catalogTotal + "), которые ни разу не продавались с 08.08 по 06.09.2026, потенциал по RRP " + fmt0(deadValue) + " AZN.";
     }
   }
 
