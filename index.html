@@ -601,6 +601,10 @@ h1, h2, h3, .say, .note, .eye, .k-banner, .k-item .d { overflow-wrap: anywhere; 
 .fv-t td:not(.n){white-space:normal;line-height:1.3}
 .fv-t td.n{white-space:nowrap}
 .fv-t td.n small{font-size:12px}
+.fv-att{margin-top:12px;font-size:14px;line-height:1.35}
+.fv-att .r{display:flex;justify-content:space-between;gap:12px;padding-top:8px}
+.fv-att .r b{white-space:nowrap;font-variant-numeric:tabular-nums}
+.fv-att .s{font-size:12.5px;opacity:.75;padding-top:2px}
 .fv-t td.sku{overflow-wrap:anywhere;min-width:96px;max-width:150px}
 .fv-t thead tr.g th{text-align:center;vertical-align:bottom;border-bottom:1px solid var(--ink-4);font-weight:600}
 .fv-t tr.sec td{font-weight:600;color:var(--ink-3);font-size:12.5px;padding-top:14px}
@@ -661,7 +665,7 @@ img.fv-img,.fv-ph{width:32px;height:32px;border-radius:8px;object-fit:contain;ba
       <div class="c-body" id="ov-ch-body"><div class="c-chart" id="ov-ch-chart"></div><div class="c-table" id="ov-ch-table"></div></div>
       <p class="c-rule" id="ov-ch-rule"></p></section>
     <div class="w-M tall sidestack" style="grid-row: span 1"><div class="ss-in">
-      <section class="dark"><div class="eye">Внимание</div><h2>Что нужно дальше</h2><p class="say" id="ov-attn"></p></section>
+      <section class="dark"><div class="eye" id="ov-attn-eye"></div><h2>Полка: довоз, возврат, неликвид</h2><div class="fv-att" id="ov-attn"></div></section>
       <section class="card rank"><div class="eye">Бренды · факт сен–окт</div><h2>Лидеры по обороту</h2><div class="rk-list" id="ov-brand-rank"></div></section></div></div>
     <section class="card w-F"><div class="ch"><div><div class="eye">Разбивка по категории</div><h2>Ассортимент по категориям</h2></div><button class="k-btn sm" type="button" id="ov-cats-export"><svg class="i" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M224,144v64a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V144a8,8,0,0,1,16,0v56H208V144a8,8,0,0,1,16,0Zm-101.66,5.66a8,8,0,0,0,11.32,0l40-40a8,8,0,0,0-11.32-11.32L136,124.69V32a8,8,0,0,0-16,0v92.69L93.66,98.34a8,8,0,0,0-11.32,11.32Z"/></svg>Экспорт CSV</button></div>
       <div class="tw"><table class="fv-t" id="ov-cats-table"></table></div>
@@ -1156,7 +1160,21 @@ FV.renderOverview = () => {
   $('ov-ch-table').innerHTML = '<div class="tw"><table class="fv-t"><thead><tr><th>Неделя</th><th class="n">Продано, шт</th><th class="n">Оборот, AZN</th></tr></thead><tbody>' +
     W.map(w => `<tr><td>${w.label}</td><td class="n">${fmt.num(w.qty)}</td><td class="n">${fmt.money(w.total)}</td></tr>`).join('') + '</tbody></table></div>';
   $('ov-ch-rule').textContent = `За ${FV.nWeeks(W.length)} (08.08–${W[W.length-1].label.split('–')[1]}.2026) продано ${fmt.num(T.sold_qty)} шт на ${fmt.money(T.sold_rrp)}.`;
-  $('ov-attn').innerHTML = `На дозаказ — <b>${D.reorder.length}</b> SKU (остаток на исходе при активных продажах). Неликвида без единой продажи — <b>${D.deadT.sku}</b> SKU на ${fmt.money(D.deadT.rrp)}.`;
+  const MX = D.matrix, mxS = Object.fromEntries(MX.rows.map(r => [r.sku, r])), sum = (a, f) => a.reduce((s, r) => s + f(r), 0);
+  const miss = MX.rows.filter(r => r.status === 'нет на полке'), low = MX.rows.filter(r => r.status === 'недобор');
+  const never = miss.filter(r => !r.sold && !FV.bySku[r.sku]), gone = miss.filter(r => !never.includes(r));
+  const over = MX.rows.filter(r => r.over > 0), osQ = sum(over, r => r.over) + sum(MX.off, r => r.stock), osR = sum(over, r => r.over * r.rrp) + sum(MX.off, r => r.stock * r.rrp);
+  const gapQ = sum(MX.rows, r => r.gap), gapR = sum(MX.rows, r => r.gap * r.rrp), roIn = D.reorder.filter(s => mxS[s] && mxS[s].gap > 0).length;
+  const q = (sku, n, rrp) => `${sku ? fmt.num(sku) + ' SKU · ' : ''}${fmt.num(n)} шт${rrp != null ? ' · ' + fmt.money(rrp) : ''}`;
+  const line = (t, v, sub) => `<div class="r"><span>${t}</span><b>${v}</b></div>${sub ? `<div class="s">${sub}</div>` : ''}`;
+  $('ov-attn-eye').textContent = `Остатки на ${MX.stockDate} против матрицы VM 01.10.2026 · суммы по RRP`;
+  $('ov-attn').innerHTML =
+    line('Довезти до нормы матрицы', q(0, gapQ, gapR)) +
+    line('— по ширине: SKU нет на полке', q(miss.length, sum(miss, r => r.gap)), `${gone.length} SKU распроданы (${fmt.num(sum(gone, r => r.gap))} шт), ${never.length} SKU ни разу не завозились в Favorit (${fmt.num(sum(never, r => r.gap))} шт)`) +
+    line('— по глубине: SKU ниже нормы', q(low.length, sum(low, r => r.gap))) +
+    line('Оверсток', q(over.length + MX.off.length, osQ, osR), `${fmt.num(sum(over, r => r.over))} шт сверх нормы, ${fmt.num(sum(MX.off, r => r.stock))} шт не из матрицы`) +
+    line('Неликвид: ни одной продажи с 08.08', q(D.deadT.sku, D.deadT.qty, D.deadT.rrp), `${D.dead_list.filter(r => mxS[r.sku]).length} SKU из них стоят в матрице`) +
+    line('Заканчиваются при активных продажах', fmt.num(D.reorder.length) + ' SKU', `${roIn} из них уже входят в довоз по матрице, ${D.reorder.length - roIn} — не из матрицы: решить, довозить ли`);
   const topBrands = (D.planM.all.brands || []).slice().sort((a, b) => b.fact - a.fact).slice(0, 6);
   $('ov-brand-rank').innerHTML = topBrands.map((b, i) => FV.rankRow(i + 1, FV.esc(b.brand), fmt.money(b.fact))).join('');
   FV.renderCatsTable('ov-cats-table', D.cats);
@@ -1165,12 +1183,23 @@ FV.renderOverview = () => {
   chart.grow($('page'));
 };
 
+FV.catSort = {};
 FV.renderCatsTable = (id, cats) => {
-  const rows = cats.slice().sort((a, b) => b.total - a.total);
+  // sort switch + the three categories with the lowest sell-through marked
+  const wrap = $(id).closest('.tw');
+  if (!wrap.previousElementSibling || !wrap.previousElementSibling.classList.contains('fv-cat-worst')) {
+    wrap.insertAdjacentHTML('beforebegin', `<div class="fv-chip-row fv-cat-sort" style="margin:12px 0"><button type="button" class="chip on" data-k="total">По обороту</button><button type="button" class="chip" data-k="st">По sell-through: худшие сверху</button></div><p class="c-rule fv-cat-worst" style="margin:0 0 8px"></p>`);
+    wrap.previousElementSibling.previousElementSibling.querySelectorAll('.chip').forEach(b => b.addEventListener('click', () => { FV.catSort[id] = b.dataset.k; FV.renderCatsTable(id, cats); }));
+  }
+  const sortK = FV.catSort[id] || 'total';
+  wrap.previousElementSibling.previousElementSibling.querySelectorAll('.chip').forEach(x => x.classList.toggle('on', x.dataset.k === sortK));
+  const worst = cats.slice().sort((a, b) => a.sellThrough - b.sellThrough).slice(0, 3), wSet = new Set(worst.map(c => c.cat));
+  wrap.previousElementSibling.innerHTML = 'Хуже всего продаются: ' + worst.map(c => `<b>${FV.esc(c.cat)}</b> — продано ${fmt.pct(c.sellThrough / 100)} завезённого, неликвид ${fmt.money(c.deadRrp)}`).join('; ') + '.';
+  const rows = cats.slice().sort((a, b) => sortK === 'st' ? a.sellThrough - b.sellThrough : b.total - a.total);
   const tS = k => rows.reduce((s, c) => s + (c[k] || 0), 0), totSku = tS('sku'), totAct = tS('active'), totWs = totSku - tS('dead'), totSold = tS('sold'), totNet = tS('net'), totAzn = tS('total'), totStockRrp = tS('stockRrp'), totDeadRrp = tS('deadRrp'), totExv = tS('soldKnownT') / 1.18, totCogs = tS('cogs');
   const sp = (a, b) => `${fmt.num(a)}<br><small class="mut">${b ? fmt.pct(a / b) : '—'}</small>`;
   $(id).innerHTML = FV.thead2([{ l: 'Категория' }, { l: 'Ассортимент, SKU', sub: ['В работе', 'На полке', 'С продажами'] }, { l: 'Продажи с 08.08', sub: ['Продано, шт', 'Sell-through', 'Оборот, AZN', 'Маржа, %'] }, { l: 'Остаток по RRP, AZN', sub: ['Всего', 'в т.ч. неликвид'] }]) + '<tbody>' +
-    rows.map(c => `<tr><td><b>${FV.esc(c.cat)}</b></td><td class="n">${c.sku}</td><td class="n">${sp(c.active, c.sku)}</td><td class="n">${sp(c.sku - c.dead, c.sku)}</td><td class="n">${fmt.num(c.sold)}</td><td class="n"><b>${c.sellThrough == null ? '—' : fmt.pct(c.sellThrough / 100)}</b></td><td class="n">${fmt.money(c.total)}</td><td class="n">${c.marginPct == null ? '—' : fmt.pct(c.marginPct / 100)}</td><td class="n">${fmt.money(c.stockRrp)}</td><td class="n">${fmt.money(c.deadRrp)}</td></tr>`).join('') +
+    rows.map(c => `<tr><td><b>${FV.esc(c.cat)}</b>${wSet.has(c.cat) ? '<div class="neg" style="font-size:12.5px">▼ худшие продажи</div>' : ''}</td><td class="n">${c.sku}</td><td class="n">${sp(c.active, c.sku)}</td><td class="n">${sp(c.sku - c.dead, c.sku)}</td><td class="n">${fmt.num(c.sold)}</td><td class="n"><b>${c.sellThrough == null ? '—' : fmt.pct(c.sellThrough / 100)}</b></td><td class="n">${fmt.money(c.total)}</td><td class="n">${c.marginPct == null ? '—' : fmt.pct(c.marginPct / 100)}</td><td class="n">${fmt.money(c.stockRrp)}</td><td class="n">${fmt.money(c.deadRrp)}</td></tr>`).join('') +
     `<tr class="tot"><td>Итого</td><td class="n">${totSku}</td><td class="n">${sp(totAct, totSku)}</td><td class="n">${sp(totWs, totSku)}</td><td class="n">${fmt.num(totSold)}</td><td class="n"><b>${totNet ? fmt.pct(totSold / totNet) : '—'}</b></td><td class="n">${fmt.money(totAzn)}</td><td class="n">${totExv ? fmt.pct((totExv - totCogs) / totExv) : '—'}</td><td class="n">${fmt.money(totStockRrp)}</td><td class="n">${fmt.money(totDeadRrp)}</td></tr></tbody>`;
 };
 
