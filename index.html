@@ -614,6 +614,11 @@ h1, h2, h3, .say, .note, .eye, .k-banner, .k-item .d { overflow-wrap: anywhere; 
 .main .tw thead th,.main .tw.sx thead th:first-child{background:var(--fv-head);color:var(--ink-2);box-shadow:none}
 .main .tw thead tr:last-child th,.main .tw thead th[rowspan]{box-shadow:inset 0 -1px 0 var(--ink-4)}
 .tw thead th:first-child{z-index:3}
+.fv-t tr[data-dow]{cursor:pointer}
+.fv-t tr.sel td{background:var(--sel)}
+.rkr[data-sku],.c-rr[data-sku]{cursor:pointer;border-radius:12px;transition:background-color .15s}
+.rkr[data-sku]:hover,.c-rr[data-sku]:hover{background:var(--hover)}
+.rkr[data-sku]:focus-visible,.c-rr[data-sku]:focus-visible{outline:2px solid var(--copper);outline-offset:2px}
 @media print{.main .tw{max-height:none}.tw thead{position:static}}
 .fv-t tr.sec td{font-weight:600;color:var(--ink-3);font-size:12.5px;padding-top:14px}
 .fv-t .mut{font-weight:400}
@@ -692,8 +697,8 @@ img.fv-img,.fv-ph{width:32px;height:32px;border-radius:8px;object-fit:contain;ba
     <section class="card w-F"><div class="ch"><div><div class="eye">Все продажи, по убыванию оборота</div><h2>Топ SKU</h2></div><button class="k-btn sm" type="button" id="sl-export"><svg class="i" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M224,144v64a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V144a8,8,0,0,1,16,0v56H208V144a8,8,0,0,1,16,0Zm-101.66,5.66a8,8,0,0,0,11.32,0l40-40a8,8,0,0,0-11.32-11.32L136,124.69V32a8,8,0,0,0-16,0v92.69L93.66,98.34a8,8,0,0,0-11.32,11.32Z"/></svg>Экспорт CSV</button></div>
       <div class="tw tall"><table class="fv-t" id="sl-table"></table></div>
       <p class="note" id="sl-note"></p></section>
-    <section class="card w-F" aria-labelledby="sl-dow-h"><div class="ch"><div><span class="c-job">Сравнение дней недели</span><h2 id="sl-dow-h">Средний оборот по дням недели</h2><div class="eye" style="margin-top:4px">AZN в день, в среднем. График — по выбранному периоду, таблица — все периоды сразу</div></div></div>
-      <div class="fv-chip-row" id="sl-dow-chips" style="margin-bottom:12px"></div>
+    <section class="card w-F" aria-labelledby="sl-dow-h"><div class="ch"><div><span class="c-job">Сравнение дней недели</span><h2 id="sl-dow-h">Средний оборот по дням недели</h2><div class="eye" style="margin-top:4px">AZN в день, в среднем. Выберите месяц или неделю — график покажет этот период; в таблице все периоды сразу</div></div></div>
+      <div id="sl-dow-chips" style="margin-bottom:12px"></div>
       <div class="c-chart" id="sl-dow-chart" style="height:220px"></div>
       <p class="c-rule" id="sl-dow-note"></p>
       <div class="tw" style="margin-top:12px"><table class="fv-t" id="sl-dow-table"></table></div>
@@ -1143,14 +1148,14 @@ FV.bySku = {}; FV.data.skuref.forEach(s => FV.bySku[s.sku] = s);
 /* ---- small building blocks ---- */
 FV.kpi = (icon, label, value, detail, k4) => `<div class="kpi${k4 ? ' k4' : ''}"><span class="ic">${IC[icon] ? `<svg class="i" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true">${IC[icon]}</svg>` : ''}</span><div><div class="l">${label}</div><div class="v n">${value}</div><div class="d">${detail || ''}</div></div></div>`;
 FV.rankRow = (n, name, value, note) => `<div class="rkr"><span class="mut n">${n}</span><span class="nm">${name}</span><span class="n">${value}</span>${note ? `<span class="pl mut">${note}</span>` : ''}</div>`;
-FV.rankBar = (name, w, value, extra) => `<div class="c-rr"><span class="n">${name}</span><span class="c-trk"><i data-w="${w.toFixed(1)}"></i></span><span class="v">${value}</span>${extra ? `<span class="d mut">${extra}</span>` : ''}</div>`;
+FV.rankBar = (name, w, value, extra, sku) => `<div class="c-rr"${sku ? ` role="button" tabindex="0" data-sku="${FV.esc(sku)}"` : ''}><span class="n">${name}</span><span class="c-trk"><i data-w="${w.toFixed(1)}"></i></span><span class="v">${value}</span>${extra ? `<span class="d mut">${extra}</span>` : ''}</div>`;
 FV.thumb = (sku, lg) => { const img = FV.data.IMG && FV.data.IMG[sku]; return img ? `<img class="${lg ? 'fv-img-lg' : 'fv-img'}" src="${img}" alt="">` : `<div class="${lg ? 'fv-ph-lg' : 'fv-ph'}"></div>`; };
 // two-row header: {l} = single column (n: numeric), {l, sub: [...]} = group over its sub-columns
 FV.thead2 = g => '<thead><tr class="g">' + g.map(x => x.sub ? `<th colspan="${x.sub.length}">${x.l}</th>` : `<th rowspan="2"${x.n ? ' class="n"' : ''}>${x.l}</th>`).join('') +
   '</tr><tr>' + g.filter(x => x.sub).map(x => x.sub.map(s => `<th class="n">${s}</th>`).join('')).join('') + '</tr></thead>';
 FV.prod = (sku, name) =>`<div class="fv-prod">${FV.thumb(sku)}<span>${FV.esc(name)}</span></div>`;
 FV.skuCell = s => `<div class="fv-rank-sku">${FV.thumb(s.sku)}<span class="fv-tx">${FV.esc(s.name)}</span></div>`;
-FV.rankRowSku = (n, s, value, note) => `<div class="rkr"><span class="mut n">${n}</span><span class="nm">${FV.skuCell(s)}</span><span class="n">${value}</span>${note ? `<span class="pl mut">${note}</span>` : ''}</div>`;
+FV.rankRowSku = (n, s, value, note) => `<div class="rkr" role="button" tabindex="0" data-sku="${FV.esc(s.sku)}" aria-label="${FV.esc(s.name)} — подробнее"><span class="mut n">${n}</span><span class="nm">${FV.skuCell(s)}</span><span class="n">${value}</span>${note ? `<span class="pl mut">${note}</span>` : ''}</div>`;
 
 /* ================= OVERVIEW ================= */
 FV.nWeeks = n => { const a = n % 10, b = n % 100; return `${n} ${a === 1 && b !== 11 ? 'неделя' : a >= 2 && a <= 4 && (b < 12 || b > 14) ? 'недели' : 'недель'}`; };
@@ -1241,26 +1246,47 @@ FV.renderSales = () => {
   FV.drawDays();
   chart.grow($('page'));
 };
-FV.dowPeriod = 'from1910';
+FV.dowPeriod = 'all';
+// periods for the weekday view, computed from the daily sales: whole period, each month, each week
+FV.dowSets = () => {
+  if (FV._dowSets) return FV._dowSets;
+  const D = FV.data, WD = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+  const iso = (dm, y) => `${y}-${dm.slice(3, 5)}-${dm.slice(0, 2)}`;
+  const build = days => WD.map((wd, i) => { const oc = days.filter(d => d.wdi === i), a = oc.reduce((s, d) => s + d.azn, 0), q = oc.reduce((s, d) => s + d.qty, 0);
+    return { wd, n: oc.length, azn: a, qty: q, avgA: oc.length ? a / oc.length : 0 }; });
+  const inM = m => D.days.filter(d => d.iso.slice(5, 7) === m);
+  const sets = [{ k: 'all', l: 'Весь период', g: 'm', days: D.days }, { k: 'aug', l: 'Август', g: 'm', days: inM('08') }, { k: 'sep', l: 'Сентябрь', g: 'm', days: inM('09') }, { k: 'oct', l: 'Октябрь', g: 'm', days: inM('10') }]
+    .concat(D.weeks.map((w, i) => { const [a, b] = w.full.split('-'), y = b.slice(6, 10), lo = iso(a, y), hi = iso(b, y);
+      return { k: 'w' + i, l: w.label, g: 'w', days: D.days.filter(d => d.iso >= lo && d.iso <= hi) }; }))
+    .filter(s => s.days.length);
+  sets.forEach(s => { s.rows = build(s.days); s.total = s.days.reduce((t, d) => t + d.azn, 0); });
+  return (FV._dowSets = sets);
+};
 FV.drawDowChart = () => {
-  const rows = FV.data.dowp[FV.dowPeriod];
+  const S = FV.dowSets().find(s => s.k === FV.dowPeriod) || FV.dowSets()[0], rows = S.rows;
   const ty = rows.map(r => r.avgA), wd = rows.map(r => r.wd);
-  chart.columns($('sl-dow-chart'), { ty, labels: wd, tip: i => `<span class="mut">${FV.esc(wd[i])}</span><b>${fmt.money(ty[i])}</b><div><span>в день, в среднем</span><span>${rows[i].n} раз</span></div>` });
-  const best = wd[ty.indexOf(Math.max(...ty))], worst = wd[ty.indexOf(Math.min(...ty))];
-  $('sl-dow-note').textContent = `Самый сильный день — ${best}, самый слабый — ${worst}.`;
+  chart.columns($('sl-dow-chart'), { ty, labels: wd, tip: i => `<span class="mut">${FV.esc(wd[i])}</span><b>${rows[i].n ? fmt.money(ty[i]) : '—'}</b><div><span>${S.g === 'w' ? 'оборот за день' : 'в день, в среднем'}</span><span>${rows[i].n ? rows[i].n + ' раз' : 'дня не было в периоде'}</span></div>` });
+  const has = rows.filter(r => r.n), hi = Math.max(...has.map(r => r.avgA)), lo = Math.min(...has.map(r => r.avgA));
+  const miss = rows.filter(r => !r.n).map(r => r.wd);
+  $('sl-dow-note').textContent = `${S.l}: самый сильный день — ${has.find(r => r.avgA === hi).wd}, самый слабый — ${has.find(r => r.avgA === lo).wd}.` + (miss.length ? ` В периоде не было: ${miss.join(', ')}.` : '');
   $('sl-dow-chart').querySelectorAll('[data-h]').forEach(c => { c.style.height = c.dataset.h + '%'; });
+  $('sl-dow-chips').querySelectorAll('.chip').forEach(x => x.classList.toggle('on', x.dataset.k === S.k));
+  $('sl-dow-table').querySelectorAll('tr[data-dow]').forEach(x => x.classList.toggle('sel', x.dataset.dow === S.k));
 };
 FV.drawDow = () => {
-  const D = FV.data;
-  const labels = [['aug', 'Август'], ['sep', 'Сентябрь'], ['oct', 'Октябрь'], ['fixed', '31.08–27.09'], ['since', '28.09–18.10'], ['from1910', 'С 19.10']];
-  $('sl-dow-chips').innerHTML = labels.map(([k, l]) => `<button type="button" class="chip${k === FV.dowPeriod ? ' on' : ''}" data-k="${k}">${l}</button>`).join('');
-  $('sl-dow-chips').querySelectorAll('.chip').forEach(b => b.addEventListener('click', () => { FV.dowPeriod = b.dataset.k; $('sl-dow-chips').querySelectorAll('.chip').forEach(x => x.classList.toggle('on', x === b)); FV.drawDowChart(); }));
+  const sets = FV.dowSets(), chip = s => `<button type="button" class="chip" data-k="${s.k}">${FV.esc(s.l)}</button>`;
+  $('sl-dow-chips').innerHTML = `<div class="fv-chip-row">${sets.filter(s => s.g === 'm').map(chip).join('')}</div>` +
+    `<div class="fv-chip-row" style="margin-top:8px"><span class="mut" style="align-self:center;font-size:12.5px">Неделя:</span>${sets.filter(s => s.g === 'w').map(chip).join('')}</div>`;
+  $('sl-dow-chips').querySelectorAll('.chip').forEach(b => b.addEventListener('click', () => { FV.dowPeriod = b.dataset.k; FV.drawDowChart(); }));
+  const cell = (r, mx, w) => `<td class="n">${r.n ? (r.avgA === mx ? `<b>${fmt.money(r.avgA)}</b>` : fmt.money(r.avgA)) + (w && r.n === 1 ? '' : ` <span class="mut">(${r.n})</span>`) : '<span class="mut">—</span>'}</td>`;
+  const row = s => { const mx = Math.max(...s.rows.filter(r => r.n).map(r => r.avgA));
+    return `<tr class="clk" tabindex="0" data-dow="${s.k}"><td>${FV.esc(s.l)}</td>${s.rows.map(r => cell(r, mx, s.g === 'w')).join('')}<td class="n">${fmt.money(s.total / s.days.length)}</td></tr>`; };
+  $('sl-dow-table').innerHTML = '<thead><tr><th>Период</th>' + sets[0].rows.map(r => `<th class="n">${r.wd}</th>`).join('') + '<th class="n">В среднем за день</th></tr></thead><tbody>' +
+    '<tr class="sec"><td colspan="9">Месяцы</td></tr>' + sets.filter(s => s.g === 'm').map(row).join('') +
+    '<tr class="sec"><td colspan="9">Недели</td></tr>' + sets.filter(s => s.g === 'w').map(row).join('') + '</tbody>';
+  $('sl-dow-table').querySelectorAll('tr[data-dow]').forEach(tr => { const go = () => { FV.dowPeriod = tr.dataset.dow; FV.drawDowChart(); };
+    tr.addEventListener('click', go); tr.addEventListener('keydown', e => { if (e.key === 'Enter') go(); }); });
   FV.drawDowChart();
-  const per = labels.filter(([k]) => D.dowp[k]);
-  const mx = Object.fromEntries(per.map(([k]) => [k, Math.max(...D.dowp[k].map(r => r.avgA))]));
-  $('sl-dow-table').innerHTML = '<thead><tr><th>День недели</th>' + per.map(([k, l]) => `<th class="n">${l}</th>`).join('') + '</tr></thead><tbody>' +
-    D.dowp[per[0][0]].map((_, i) => `<tr><td><b>${D.dowp[per[0][0]][i].wd}</b></td>` + per.map(([k]) => { const r = D.dowp[k][i];
-      return `<td class="n">${r.n ? (r.avgA === mx[k] ? `<b>${fmt.money(r.avgA)}</b>` : fmt.money(r.avgA)) + ` <span class="mut">(${r.n})</span>` : '—'}</td>`; }).join('') + '</tr>').join('') + '</tbody>';
 };
 FV.weekSkuIndex = null;
 FV.buildWeekSkuIndex = () => {
@@ -1424,7 +1450,7 @@ FV.renderStock = () => {
     FV.kpi('tag', 'SKU без продаж', D.deadT.sku, 'из ' + D.T.sku_active + ' в работе'),
   ].join('');
   const top10 = D.dead_list.slice(0, 10), maxV = Math.max(...top10.map(r => r.stockRrp)) || 1;
-  $('st-rank').innerHTML = top10.map(r => FV.rankBar(FV.esc(r.name), r.stockRrp / maxV * 100, fmt.money(r.stockRrp), r.brand)).join('');
+  $('st-rank').innerHTML = top10.map(r => FV.rankBar(FV.esc(r.name), r.stockRrp / maxV * 100, fmt.money(r.stockRrp), r.brand, r.sku)).join('');
   const nW = D.weeks.length;
   const reorderRows = D.reorder.map(sku => FV.bySku[sku]).filter(Boolean).map(s => ({ ...s, weeklyRate: s.sold / nW, cover: s.sold > 0 ? (s.stock / (s.sold / nW)) : 0 })).sort((a, b) => a.cover - b.cover);
   $('st-reorder-table').innerHTML = '<thead><tr><th>Товар</th><th>SKU</th><th>Бренд</th><th class="n">Продано с 08.08, шт</th><th class="n">Продажи в неделю, шт</th><th class="n">Остаток, шт</th><th class="n">Хватит на, нед.</th></tr></thead><tbody>' +
@@ -1503,8 +1529,8 @@ FV.openBrand = brand => {
   $('cat-brand-lbl').textContent = brand; $('cat-cat-lbl').textContent = 'Все'; $('cat-st-lbl').textContent = 'Все';
   FV.goto('catalog'); FV.renderCatalogTable();
 };
-document.addEventListener('click', e => { const r = e.target.closest('tr[data-sku]'); if (r) return FV.openSkuDrawer(r.dataset.sku); const b = e.target.closest('tr[data-brand]'); if (b) FV.openBrand(b.dataset.brand); });
-document.addEventListener('keydown', e => { if (e.key !== 'Enter') return; const r = e.target.closest('tr[data-sku]'); if (r) return FV.openSkuDrawer(r.dataset.sku); const b = e.target.closest('tr[data-brand]'); if (b) FV.openBrand(b.dataset.brand); });
+document.addEventListener('click', e => { const r = e.target.closest('tr[data-sku], .rkr[data-sku], .c-rr[data-sku]'); if (r) return FV.openSkuDrawer(r.dataset.sku); const b = e.target.closest('tr[data-brand]'); if (b) FV.openBrand(b.dataset.brand); });
+document.addEventListener('keydown', e => { if (e.key !== 'Enter' && e.key !== ' ') return; const r = e.target.closest('tr[data-sku], .rkr[data-sku], .c-rr[data-sku]'); if (r && e.key === ' ') e.preventDefault(); if (r) return FV.openSkuDrawer(r.dataset.sku); const b = e.target.closest('tr[data-brand]'); if (b) FV.openBrand(b.dataset.brand); });
 
 /* ================= ZONING / VM ================= */
 FV.renderZoning = () => {
