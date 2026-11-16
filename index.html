@@ -764,7 +764,7 @@ img.fv-img,.fv-ph{width:32px;height:32px;border-radius:8px;object-fit:contain;ba
     <section class="card kpis w-F" aria-label="Ключевые цифры"><div class="kgrid" id="se-kpi"></div></section>
     <section class="card w-F"><div class="ch"><div><div class="eye" id="se-eye"></div><h2>Сезонная коллекция «Осень»: SKU и продажи</h2></div><button class="k-btn sm" type="button" id="se-export"><svg class="i" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M224,144v64a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V144a8,8,0,0,1,16,0v56H208V144a8,8,0,0,1,16,0Zm-101.66,5.66a8,8,0,0,0,11.32,0l40-40a8,8,0,0,0-11.32-11.32L136,124.69V32a8,8,0,0,0-16,0v92.69L93.66,98.34a8,8,0,0,0-11.32,11.32Z"/></svg>Экспорт CSV</button></div>
       <div class="tw"><table class="fv-t" id="se-table"></table></div>
-      <p class="c-rule">Сезонка в матрицу VM не входит и в оверсток не считается. Норма — глубина по письму Наргиз от 11.11.2026, держим до отмены. Sell-through — продано ÷ отгружено.</p></section>
+      <p class="c-rule">Сезонка появилась на полках Favorit 13 ноября 2026 года. В матрицу VM не входит и в оверсток не считается. Норма — глубина по письму Наргиз от 11.11.2026, держим до отмены. Sell-through — продано ÷ отгружено.</p></section>
   </div></div>
 
   <!-- ============ STOCK ============ -->
@@ -1198,7 +1198,7 @@ FV.renderOverview = () => {
     line('— по ширине: SKU нет на полке', q(miss.length, sum(miss, r => r.gap)), `${gone.length} SKU распроданы (${fmt.num(sum(gone, r => r.gap))} шт), ${never.length} SKU ни разу не завозились в Favorit (${fmt.num(sum(never, r => r.gap))} шт)`) +
     line('— по глубине: SKU ниже нормы', q(low.length, sum(low, r => r.gap))) +
     line('Оверсток', q(over.length + MX.off.length, osQ, osR), `${fmt.num(sum(over, r => r.over))} шт сверх нормы, ${fmt.num(sum(MX.off, r => r.stock))} шт не из матрицы`) +
-    ((MX.season || []).length ? line('Сезонка · осень (вне матрицы)', q(MX.season.length, sum(MX.season, r => r.stock), sum(MX.season, r => r.stock * r.rrp)), `норма ${fmt.num(sum(MX.season, r => r.depth))} шт по письму Наргиз от 11.11, не хватает ${fmt.num(sum(MX.season, r => r.gap))} шт`) : '') +
+    ((MX.season || []).length ? line('Сезонка · осень (вне матрицы)', q(MX.season.length, sum(MX.season, r => r.stock), sum(MX.season, r => r.stock * r.rrp)), `на полках с 13.11; норма ${fmt.num(sum(MX.season, r => r.depth))} шт по письму Наргиз от 11.11, не хватает ${fmt.num(sum(MX.season, r => r.gap))} шт`) : '') +
     line('Неликвид: ни одной продажи с 08.08', q(D.deadT.sku, D.deadT.qty, D.deadT.rrp), `${D.dead_list.filter(r => mxS[r.sku]).length} SKU из них стоят в матрице`) +
     line('Заканчиваются при активных продажах', fmt.num(D.reorder.length) + ' SKU', `${roIn} из них уже входят в довоз по матрице, ${D.reorder.length - roIn} — не из матрицы: решить, довозить ли`);
   const topBrands = (D.planM.all.brands || []).slice().sort((a, b) => b.fact - a.fact).slice(0, 6);
@@ -1459,7 +1459,7 @@ FV.renderSeason = () => {
   const D = FV.data, MX = D.matrix || {}, S = (MX.season || []).slice().sort((a, b) => a.brand.localeCompare(b.brand) || b.total - a.total || a.name.localeCompare(b.name));
   const sum = f => S.reduce((s, r) => s + (f(r) || 0), 0);
   const ship = sum(r => r.shipped), sold = sum(r => r.sold), tot = sum(r => r.total), norm = sum(r => r.depth), shelf = sum(r => r.stock), gap = sum(r => r.gap);
-  $('se-eye').textContent = `${S.length} SKU · письмо Наргиз от 11.11.2026 · остатки на ${MX.stockDate}, продажи по ${D.as_of}`;
+  $('se-eye').textContent = `${S.length} SKU · на полках с 13.11.2026 · остатки на ${MX.stockDate}, продажи по ${D.as_of}`;
   $('se-kpi').innerHTML = [
     FV.kpi('tag', 'SKU в коллекции', fmt.num(S.length), `${S.filter(r => r.stock > 0).length} на полке`),
     FV.kpi('stock', 'На полке, шт', fmt.num(shelf), `норма ${fmt.num(norm)} шт`),
